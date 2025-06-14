@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -40,6 +40,7 @@ export interface OnboardingData {
 }
 
 const Onboarding = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     personalFoundation: {
@@ -102,6 +103,7 @@ const Onboarding = () => {
     } else {
       // Complete onboarding - redirect to simulation
       console.log("Onboarding completed:", onboardingData);
+      navigate('/simulation');
     }
   };
 
