@@ -1,9 +1,11 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Play, Sparkles, Clock, Heart, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
       {/* Hero Section */}
@@ -34,6 +36,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Button 
               size="lg" 
+              onClick={() => navigate('/onboarding')}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:scale-105 transition-all duration-300"
             >
               Start Your Future Simulation
@@ -187,6 +190,7 @@ const Index = () => {
           
           <Button 
             size="lg" 
+            onClick={() => navigate('/onboarding')}
             className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-12 py-6 text-xl font-bold rounded-full shadow-2xl hover:scale-105 transition-all duration-300"
           >
             Start Your Future Simulation
