@@ -51,7 +51,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'software-engineer',
       title: 'Software Engineer',
       category: 'Technology',
-      salaryRange: '$70k - $200k',
+      salaryRange: '₹8L - ₹25L',
       growthPotential: 90,
       workLifeBalance: 75,
       description: 'Design, develop, and maintain software applications and systems.'
@@ -60,7 +60,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'product-manager',
       title: 'Product Manager',
       category: 'Technology',
-      salaryRange: '$90k - $250k',
+      salaryRange: '₹15L - ₹50L',
       growthPotential: 85,
       workLifeBalance: 70,
       description: 'Lead product development from conception to launch.'
@@ -69,7 +69,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'data-scientist',
       title: 'Data Scientist',
       category: 'Technology',
-      salaryRange: '$80k - $220k',
+      salaryRange: '₹10L - ₹35L',
       growthPotential: 88,
       workLifeBalance: 80,
       description: 'Analyze complex data to help companies make better decisions.'
@@ -78,7 +78,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'marketing-manager',
       title: 'Marketing Manager',
       category: 'Business',
-      salaryRange: '$60k - $180k',
+      salaryRange: '₹8L - ₹30L',
       growthPotential: 80,
       workLifeBalance: 85,
       description: 'Develop and execute marketing strategies to promote products.'
@@ -87,7 +87,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'financial-analyst',
       title: 'Financial Analyst',
       category: 'Finance',
-      salaryRange: '$55k - $150k',
+      salaryRange: '₹6L - ₹20L',
       growthPotential: 75,
       workLifeBalance: 70,
       description: 'Analyze financial data to guide investment decisions.'
@@ -96,7 +96,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
       id: 'ux-designer',
       title: 'UX Designer',
       category: 'Design',
-      salaryRange: '$65k - $160k',
+      salaryRange: '₹7L - ₹25L',
       growthPotential: 82,
       workLifeBalance: 85,
       description: 'Design user-friendly interfaces and experiences.'
@@ -105,50 +105,50 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
 
   const companies: Company[] = [
     {
-      id: 'google',
-      name: 'Google',
+      id: 'tcs',
+      name: 'Tata Consultancy Services',
       industry: 'Technology',
-      size: 'Large (100k+ employees)',
-      locations: ['Mountain View, CA', 'Seattle, WA', 'New York, NY', 'Bangalore, India'],
-      culture: 'Innovation-focused, collaborative, data-driven',
-      benefits: ['Health insurance', 'Stock options', 'Free meals', '20% time'],
-      avgSalary: '$150k - $400k',
+      size: 'Large (500k+ employees)',
+      locations: ['Bangalore, India', 'Mumbai, India', 'Chennai, India', 'Hyderabad, India'],
+      culture: 'Traditional, process-oriented, growth-focused',
+      benefits: ['Health insurance', 'Learning platform', 'Employee development', 'Global opportunities'],
+      avgSalary: '₹6L - ₹25L',
       workLifeBalance: 75,
-      logo: '🔍'
+      logo: '🏢'
     },
     {
-      id: 'microsoft',
-      name: 'Microsoft',
+      id: 'infosys',
+      name: 'Infosys',
       industry: 'Technology',
-      size: 'Large (200k+ employees)',
-      locations: ['Redmond, WA', 'San Francisco, CA', 'Austin, TX', 'Hyderabad, India'],
-      culture: 'Inclusive, growth mindset, customer-focused',
-      benefits: ['Healthcare', 'Stock purchase plan', 'Learning budget', 'Flexible work'],
-      avgSalary: '$140k - $350k',
+      size: 'Large (300k+ employees)',
+      locations: ['Bangalore, India', 'Pune, India', 'Mysore, India', 'Hyderabad, India'],
+      culture: 'Innovation-driven, employee-centric, learning culture',
+      benefits: ['Healthcare', 'Stock options', 'Training programs', 'Flexible work'],
+      avgSalary: '₹7L - ₹30L',
       workLifeBalance: 80,
-      logo: '🪟'
+      logo: '💼'
     },
     {
-      id: 'netflix',
-      name: 'Netflix',
-      industry: 'Entertainment/Technology',
-      size: 'Medium (12k employees)',
-      locations: ['Los Gatos, CA', 'Los Angeles, CA', 'Amsterdam, NL', 'Mumbai, India'],
-      culture: 'Freedom & responsibility, high performance, creative',
-      benefits: ['Unlimited PTO', 'Stock options', 'Top-tier compensation', 'Creative freedom'],
-      avgSalary: '$160k - $500k',
+      id: 'flipkart',
+      name: 'Flipkart',
+      industry: 'E-commerce/Technology',
+      size: 'Large (50k+ employees)',
+      locations: ['Bangalore, India', 'Delhi, India', 'Mumbai, India', 'Chennai, India'],
+      culture: 'Fast-paced, customer-obsessed, innovative',
+      benefits: ['Stock options', 'Flexible PTO', 'Learning budget', 'Health coverage'],
+      avgSalary: '₹15L - ₹60L',
       workLifeBalance: 70,
-      logo: '📺'
+      logo: '🛒'
     },
     {
       id: 'startup',
-      name: 'Tech Startup',
+      name: 'Indian Tech Startup',
       industry: 'Technology',
       size: 'Small (10-100 employees)',
-      locations: ['San Francisco, CA', 'Austin, TX', 'Berlin, Germany', 'Bangalore, India'],
+      locations: ['Bangalore, India', 'Delhi, India', 'Mumbai, India', 'Pune, India'],
       culture: 'Fast-paced, entrepreneurial, equity-focused',
       benefits: ['Equity', 'Flexible hours', 'Learning opportunities', 'Rapid growth'],
-      avgSalary: '$70k - $180k + equity',
+      avgSalary: '₹8L - ₹35L + equity',
       workLifeBalance: 60,
       logo: '🚀'
     }
@@ -164,28 +164,51 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
   });
 
   const handleCreateCustomPath = () => {
-    if (customCareer.title && customCareer.category) {
+    if (customCareer.title.trim() && customCareer.category.trim()) {
       const newCareer: Career = {
         id: `custom-${Date.now()}`,
-        title: customCareer.title,
-        category: customCareer.category,
-        salaryRange: customCareer.salaryRange || '$50k - $150k',
+        title: customCareer.title.trim(),
+        category: customCareer.category.trim(),
+        salaryRange: customCareer.salaryRange.trim() || '₹5L - ₹20L',
         growthPotential: 75,
         workLifeBalance: 80,
-        description: customCareer.description || `Custom career path in ${customCareer.title}`
+        description: customCareer.description.trim() || `Custom career path in ${customCareer.title}`
       };
+      
+      // Reset form
+      setCustomCareer({
+        title: '',
+        category: '',
+        salaryRange: '',
+        description: ''
+      });
+      setShowCustomForm(false);
+      
       onSelectCareer(newCareer);
-      onClose();
     }
+  };
+
+  const resetCustomForm = () => {
+    setCustomCareer({
+      title: '',
+      category: '',
+      salaryRange: '',
+      description: ''
+    });
+    setShowCustomForm(false);
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-black/90 border-white/20 text-white">
-        <CardHeader className="pb-4">
+      <Card className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700 text-white">
+        <CardHeader className="pb-4 border-b border-gray-700">
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl text-white">Choose Your Career Path</CardTitle>
-            <Button variant="ghost" onClick={onClose} className="text-white hover:bg-white/10">
+            <Button 
+              variant="ghost" 
+              onClick={onClose} 
+              className="text-white hover:bg-gray-800 hover:text-white"
+            >
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -198,7 +221,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                 placeholder="Search careers..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="pl-10 bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-blue-500"
               />
             </div>
             
@@ -211,8 +234,8 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                   onClick={() => setSelectedCategory(category)}
                   className={`${
                     selectedCategory === category 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                      : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' 
+                      : 'bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white'
                   }`}
                 >
                   {category === 'all' ? 'All' : category}
@@ -222,56 +245,81 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
           </div>
 
           {/* Create Custom Path Button */}
-          <Button
-            onClick={() => setShowCustomForm(!showCustomForm)}
-            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Create Custom Path
-          </Button>
+          <div className="flex gap-2 mt-4">
+            <Button
+              onClick={() => setShowCustomForm(!showCustomForm)}
+              className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              {showCustomForm ? 'Hide Custom Form' : 'Create Custom Path'}
+            </Button>
+            {showCustomForm && (
+              <Button
+                onClick={resetCustomForm}
+                variant="outline"
+                className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white"
+              >
+                Reset Form
+              </Button>
+            )}
+          </div>
         </CardHeader>
 
-        <CardContent>
-          {/* Custom Career Form */}
+        <CardContent className="p-6">
+          {/* Custom Career Form - Fixed positioning to prevent flickering */}
           {showCustomForm && (
-            <Card className="mb-6 bg-purple-900/30 border-purple-400">
-              <CardContent className="p-4">
-                <h3 className="text-lg font-semibold text-white mb-4">Create Your Custom Career Path</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Career Title (e.g., AI Researcher)"
-                    value={customCareer.title}
-                    onChange={(e) => setCustomCareer(prev => ({ ...prev, title: e.target.value }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    placeholder="Category (e.g., Technology)"
-                    value={customCareer.category}
-                    onChange={(e) => setCustomCareer(prev => ({ ...prev, category: e.target.value }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    placeholder="Salary Range (e.g., $80k - $200k)"
-                    value={customCareer.salaryRange}
-                    onChange={(e) => setCustomCareer(prev => ({ ...prev, salaryRange: e.target.value }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    placeholder="Description"
-                    value={customCareer.description}
-                    onChange={(e) => setCustomCareer(prev => ({ ...prev, description: e.target.value }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  />
-                </div>
-                <Button
-                  onClick={handleCreateCustomPath}
-                  disabled={!customCareer.title || !customCareer.category}
-                  className="mt-4 bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
-                >
-                  Create Career Path
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="mb-6">
+              <Card className="bg-purple-900/20 border-purple-600">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Create Your Custom Career Path</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Career Title *</label>
+                      <Input
+                        placeholder="e.g., AI Researcher"
+                        value={customCareer.title}
+                        onChange={(e) => setCustomCareer(prev => ({ ...prev, title: e.target.value }))}
+                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
+                      <Input
+                        placeholder="e.g., Technology"
+                        value={customCareer.category}
+                        onChange={(e) => setCustomCareer(prev => ({ ...prev, category: e.target.value }))}
+                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Salary Range</label>
+                      <Input
+                        placeholder="e.g., ₹10L - ₹40L"
+                        value={customCareer.salaryRange}
+                        onChange={(e) => setCustomCareer(prev => ({ ...prev, salaryRange: e.target.value }))}
+                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                      <Input
+                        placeholder="Brief description of the role"
+                        value={customCareer.description}
+                        onChange={(e) => setCustomCareer(prev => ({ ...prev, description: e.target.value }))}
+                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleCreateCustomPath}
+                    disabled={!customCareer.title.trim() || !customCareer.category.trim()}
+                    className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Create Career Path
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           {/* Career Selection */}
@@ -280,13 +328,13 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
               {filteredCareers.map((career) => (
                 <Card
                   key={career.id}
-                  className="cursor-pointer transition-all hover:scale-105 bg-white/5 border-white/20 hover:border-blue-400"
+                  className="cursor-pointer transition-all hover:scale-105 bg-gray-800 border-gray-700 hover:border-blue-500"
                   onClick={() => setSelectedCareer(career)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-white">{career.title}</h3>
-                      <Badge variant="secondary" className="bg-blue-600 text-white">
+                      <Badge className="bg-blue-600 text-white hover:bg-blue-700">
                         {career.category}
                       </Badge>
                     </div>
@@ -323,7 +371,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                 <Button
                   variant="outline"
                   onClick={() => setSelectedCareer(null)}
-                  className="text-white border-white/20 hover:bg-white/10"
+                  className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white"
                 >
                   Back to Careers
                 </Button>
@@ -333,7 +381,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                 {companies.map((company) => (
                   <Card
                     key={company.id}
-                    className="cursor-pointer transition-all hover:scale-105 bg-white/5 border-white/20 hover:border-green-400"
+                    className="cursor-pointer transition-all hover:scale-105 bg-gray-800 border-gray-700 hover:border-green-500"
                     onClick={() => onSelectCareer(selectedCareer, company)}
                   >
                     <CardContent className="p-6">
@@ -374,7 +422,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                           </div>
                         </div>
 
-                        <div className="pt-2 border-t border-white/20">
+                        <div className="pt-2 border-t border-gray-700">
                           <p className="text-gray-400 text-xs italic">{company.culture}</p>
                         </div>
                       </div>
@@ -388,7 +436,7 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
                 <Button
                   variant="outline"
                   onClick={() => onSelectCareer(selectedCareer)}
-                  className="text-white border-white/20 hover:bg-white/10"
+                  className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white"
                 >
                   Continue without specific company
                 </Button>
