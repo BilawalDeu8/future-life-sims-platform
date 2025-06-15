@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { X, Building, MapPin, DollarSign, Users, Heart, Star, Search, Plus } from "lucide-react";
+import { X, Building, MapPin, DollarSign, Users, Heart, Star, Search, Plus, Loader2 } from "lucide-react";
+import { useRealWorldData } from '@/hooks/useRealWorldData';
+import CustomCareerForm from './CustomCareerForm';
 
 interface Career {
   id: string;
@@ -39,12 +41,13 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showCustomForm, setShowCustomForm] = useState(false);
-  const [customCareer, setCustomCareer] = useState({
-    title: '',
-    category: '',
-    salaryRange: '',
-    description: ''
-  });
+  
+  const { 
+    salaryData, 
+    costOfLivingData, 
+    isLoading: dataLoading, 
+    fetchScenarioData 
+  } = useRealWorldData();
 
   const careers: Career[] = [
     {
@@ -163,39 +166,8 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
     return matchesCategory && matchesSearch;
   });
 
-  const handleCreateCustomPath = () => {
-    if (customCareer.title.trim() && customCareer.category.trim()) {
-      const newCareer: Career = {
-        id: `custom-${Date.now()}`,
-        title: customCareer.title.trim(),
-        category: customCareer.category.trim(),
-        salaryRange: customCareer.salaryRange.trim() || '₹5L - ₹20L',
-        growthPotential: 75,
-        workLifeBalance: 80,
-        description: customCareer.description.trim() || `Custom career path in ${customCareer.title}`
-      };
-      
-      // Reset form
-      setCustomCareer({
-        title: '',
-        category: '',
-        salaryRange: '',
-        description: ''
-      });
-      setShowCustomForm(false);
-      
-      onSelectCareer(newCareer);
-    }
-  };
-
-  const resetCustomForm = () => {
-    setCustomCareer({
-      title: '',
-      category: '',
-      salaryRange: '',
-      description: ''
-    });
-    setShowCustomForm(false);
+  const handleCustomCareerCreated = (career: Career) => {
+    onSelectCareer(career);
   };
 
   return (
@@ -253,72 +225,17 @@ const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose
               <Plus className="h-4 w-4 mr-2" />
               {showCustomForm ? 'Hide Custom Form' : 'Create Custom Path'}
             </Button>
-            {showCustomForm && (
-              <Button
-                onClick={resetCustomForm}
-                variant="outline"
-                className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white"
-              >
-                Reset Form
-              </Button>
-            )}
           </div>
         </CardHeader>
 
         <CardContent className="p-6">
-          {/* Custom Career Form - Fixed positioning to prevent flickering */}
+          {/* Custom Career Form */}
           {showCustomForm && (
             <div className="mb-6">
-              <Card className="bg-purple-900/20 border-purple-600">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Create Your Custom Career Path</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Career Title *</label>
-                      <Input
-                        placeholder="e.g., AI Researcher"
-                        value={customCareer.title}
-                        onChange={(e) => setCustomCareer(prev => ({ ...prev, title: e.target.value }))}
-                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
-                      <Input
-                        placeholder="e.g., Technology"
-                        value={customCareer.category}
-                        onChange={(e) => setCustomCareer(prev => ({ ...prev, category: e.target.value }))}
-                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Salary Range</label>
-                      <Input
-                        placeholder="e.g., ₹10L - ₹40L"
-                        value={customCareer.salaryRange}
-                        onChange={(e) => setCustomCareer(prev => ({ ...prev, salaryRange: e.target.value }))}
-                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
-                      <Input
-                        placeholder="Brief description of the role"
-                        value={customCareer.description}
-                        onChange={(e) => setCustomCareer(prev => ({ ...prev, description: e.target.value }))}
-                        className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    onClick={handleCreateCustomPath}
-                    disabled={!customCareer.title.trim() || !customCareer.category.trim()}
-                    className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Create Career Path
-                  </Button>
-                </CardContent>
-              </Card>
+              <CustomCareerForm 
+                onCareerCreated={handleCustomCareerCreated}
+                onCancel={() => setShowCustomForm(false)}
+              />
             </div>
           )}
 
