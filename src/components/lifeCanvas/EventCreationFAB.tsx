@@ -58,7 +58,7 @@ const EventCreationFAB: React.FC<EventCreationFABProps> = ({ onEventCreate, curr
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute bottom-16 right-0 grid grid-cols-2 gap-2 p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
+            className="absolute bottom-16 right-0 transform -translate-x-1/2 grid grid-cols-2 gap-2 p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 max-w-[280px]"
           >
             {eventCategories.map((category, index) => (
               <motion.button
@@ -71,7 +71,7 @@ const EventCreationFAB: React.FC<EventCreationFABProps> = ({ onEventCreate, curr
                 }}
                 exit={{ opacity: 0, y: 20 }}
                 onClick={() => handleCategorySelect(category)}
-                className="flex flex-col items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group min-w-[100px]"
+                className="flex flex-col items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group min-w-[120px]"
               >
                 <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">
                   {category.icon}
