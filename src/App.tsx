@@ -21,10 +21,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Check if user is authenticated in localStorage (for demo mode)
+    const localAuth = localStorage.getItem('userAuthenticated');
+    
     // Only check authentication if Supabase is configured
     if (!isSupabaseConfigured()) {
-      // If Supabase is not configured, allow access (development mode)
-      setIsAuthenticated(true);
+      // In demo mode, check localStorage for authentication
+      setIsAuthenticated(localAuth === 'true');
       return;
     }
 
@@ -62,7 +65,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
   
-  if (!isAuthenticated && isSupabaseConfigured()) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
   
