@@ -584,7 +584,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
                   </div>
                   
                   {/* Enhanced Labels with Better Spacing */}
-                  <div className="absolute -bottom-28 left-1/2 transform -translate-x-1/2 text-center w-36">
+                  <div className="absolute -bottom-32 left-1/2 transform -translate-x-1/2 text-center w-40">
                     <div className="bg-gray-900/95 backdrop-blur-sm rounded-xl p-4 border border-gray-600/50 shadow-lg space-y-2">
                       <div className="text-base font-bold text-white">{stage.year}</div>
                       <div className="text-sm text-gray-200 leading-relaxed">{stage.career}</div>
