@@ -265,6 +265,15 @@ const Simulation = () => {
       
       <div className="flex-1 flex flex-col justify-center space-y-4 pb-8 px-2">
         <Button
+          onClick={() => navigate('/life-canvas')}
+          className="w-full bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-700 hover:to-orange-700 py-4 text-white text-lg relative overflow-hidden"
+        >
+          <div className="absolute top-1 right-1 bg-yellow-400 text-black text-xs px-2 py-0.5 rounded-full font-bold">
+            NEW!
+          </div>
+          📱 Document Your Real Life Journey
+        </Button>
+        <Button
           onClick={() => navigate('/timeline')}
           className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-4 text-white text-lg"
         >
@@ -373,9 +382,18 @@ const Simulation = () => {
               Scenarios personalized based on your location and preferences
             </p>
             
-            {/* Fixed Desktop Button Layout */}
+            {/* Enhanced Desktop Button Layout */}
             <div className="max-w-5xl mx-auto px-4">
               <div className="flex flex-wrap justify-center gap-4 mb-8">
+                <Button
+                  onClick={() => navigate('/life-canvas')}
+                  className="bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-700 hover:to-orange-700 px-6 py-3 text-white flex-shrink-0 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 bg-yellow-400 text-black text-xs px-2 py-0.5 rounded-bl-lg font-bold">
+                    NEW!
+                  </div>
+                  📱 Document Real Life Journey
+                </Button>
                 <Button
                   onClick={() => navigate('/timeline')}
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-6 py-3 text-white flex-shrink-0"
