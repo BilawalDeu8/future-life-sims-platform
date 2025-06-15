@@ -13,12 +13,12 @@ const Index = () => {
   const navigate = useNavigate();
   const userId = "demo-user"; // In a real app, get from auth
   const { profile, isLoading } = usePersonalization(userId);
-  const { stats } = useGamification(userId);
+  const { userStats, userAchievements } = useGamification();
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
     // Show welcome message for new users
-    if (!isLoading && !profile?.hasCompletedOnboarding) {
+    if (!isLoading && profile && !profile.preferences?.onboardingCompleted) {
       setTimeout(() => {
         navigate('/onboarding');
       }, 2000);
@@ -38,7 +38,11 @@ const Index = () => {
           </p>
           
           {/* Quick Stats for existing users */}
-          <QuickStats userId={userId} />
+          <QuickStats 
+            userId={userId} 
+            userStats={userStats}
+            userAchievements={userAchievements}
+          />
         </div>
 
         {/* Main Action Cards */}
@@ -162,10 +166,10 @@ const Index = () => {
         </div>
 
         {/* User Stats Overview */}
-        {stats && (
+        {userStats && (
           <div className="mb-16">
             <UserStatsOverview 
-              userId={userId} 
+              stats={userStats}
               onToggle={() => setShowStats(!showStats)}
               isExpanded={showStats}
             />

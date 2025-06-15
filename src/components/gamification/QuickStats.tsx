@@ -4,11 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, Star, Target, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useGamificationContext } from './GamificationProvider';
+import { UserStats, Achievement } from '@/types/gamification';
 
-const QuickStats: React.FC = () => {
+interface QuickStatsProps {
+  userId: string;
+  userStats: UserStats;
+  userAchievements: Achievement[];
+}
+
+const QuickStats: React.FC<QuickStatsProps> = ({ userId, userStats, userAchievements }) => {
   const navigate = useNavigate();
-  const { userStats, userAchievements } = useGamificationContext();
   
   const recentAchievements = userAchievements
     .filter(a => a.isUnlocked)
