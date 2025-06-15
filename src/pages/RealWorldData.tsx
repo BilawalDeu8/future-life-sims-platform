@@ -4,12 +4,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import RealWorldDataDisplay from "@/components/data/RealWorldDataDisplay";
 import { useRealWorldData } from '@/hooks/useRealWorldData';
+import { useEffect } from 'react';
 
 const RealWorldData = () => {
-  const { salaryData, costOfLivingData, jobMarketData, isLoading } = useRealWorldData({
-    occupation: 'Software Developer',
-    location: 'San Francisco, CA'
-  });
+  const { salaryData, costOfLivingData, jobMarketData, isLoading, fetchScenarioData } = useRealWorldData();
+
+  useEffect(() => {
+    // Get occupation and location from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const occupation = urlParams.get('occupation') || 'Software Developer';
+    const location = urlParams.get('location') || 'San Francisco, CA';
+    
+    fetchScenarioData(occupation, location);
+  }, [fetchScenarioData]);
 
   const handleClose = () => {
     window.close();

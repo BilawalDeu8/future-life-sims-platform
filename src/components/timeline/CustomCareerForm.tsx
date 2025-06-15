@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,11 +19,10 @@ interface Career {
 }
 
 interface CustomCareerFormProps {
-  onCareerCreated: (career: Career) => void;
-  onCancel: () => void;
+  onBack: () => void;
 }
 
-const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onCareerCreated, onCancel }) => {
+const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onBack }) => {
   const [formData, setFormData] = useState({
     jobTitle: '',
     company: '',
