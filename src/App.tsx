@@ -27,6 +27,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     // Only check authentication if Supabase is configured
     if (!isSupabaseConfigured()) {
       // In demo mode, check localStorage for authentication
+      // If no auth status is set, default to false (not authenticated)
       setIsAuthenticated(localAuth === 'true');
       return;
     }
