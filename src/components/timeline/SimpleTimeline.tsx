@@ -154,7 +154,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         <Button
           variant="outline"
           onClick={onBack}
-          className="text-white border-white/30 hover:bg-white/10"
+          className="text-white border-white/50 hover:bg-white/20 hover:text-white bg-black/30 backdrop-blur-sm"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Career Selection
@@ -167,7 +167,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         <Button
           variant="outline"
           onClick={() => setIsPlaying(!isPlaying)}
-          className="text-white border-green-400 hover:bg-green-500/30"
+          className="text-white border-green-400/70 hover:bg-green-500/30 hover:text-white bg-green-600/20 backdrop-blur-sm"
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           {isPlaying ? 'Pause' : 'Play'}
@@ -175,48 +175,48 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       </div>
 
       {/* Current Stage Highlight */}
-      <Card className="mb-8 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-400/30">
+      <Card className="mb-8 bg-gradient-to-r from-blue-600/30 to-purple-600/30 border-blue-400/50 backdrop-blur-sm">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-3xl font-bold text-white">Age {currentStage.age}</h2>
-              <p className="text-blue-300 text-lg">{currentStage.title}</p>
+              <p className="text-blue-200 text-lg">{currentStage.title}</p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-green-400">{formatCurrency(currentStage.income)}</p>
-              <p className="text-gray-300">per year</p>
+              <p className="text-2xl font-bold text-green-300">{formatCurrency(currentStage.income)}</p>
+              <p className="text-gray-200">per year</p>
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center space-x-2">
-              <Briefcase className="h-5 w-5 text-blue-400" />
+              <Briefcase className="h-5 w-5 text-blue-300" />
               <div>
-                <p className="text-sm text-gray-300">Career</p>
+                <p className="text-sm text-gray-200">Career</p>
                 <p className="text-white font-medium">{currentStage.career}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-2">
-              <Home className="h-5 w-5 text-orange-400" />
+              <Home className="h-5 w-5 text-orange-300" />
               <div>
-                <p className="text-sm text-gray-300">Housing</p>
+                <p className="text-sm text-gray-200">Housing</p>
                 <p className="text-white font-medium">{currentStage.housing}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-2">
-              <Heart className="h-5 w-5 text-pink-400" />
+              <Heart className="h-5 w-5 text-pink-300" />
               <div>
-                <p className="text-sm text-gray-300">Relationship</p>
+                <p className="text-sm text-gray-200">Relationship</p>
                 <p className="text-white font-medium">{currentStage.relationship}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-2">
-              <MapPin className="h-5 w-5 text-green-400" />
+              <MapPin className="h-5 w-5 text-green-300" />
               <div>
-                <p className="text-sm text-gray-300">Location</p>
+                <p className="text-sm text-gray-200">Location</p>
                 <p className="text-white font-medium">{currentStage.location}</p>
               </div>
             </div>
@@ -225,7 +225,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       </Card>
 
       {/* Timeline Visualization */}
-      <Card className="mb-6 bg-black/20 border-white/10">
+      <Card className="mb-6 bg-black/30 border-white/20 backdrop-blur-sm">
         <CardContent className="p-6">
           <div className="relative">
             {/* Timeline Line */}
@@ -274,13 +274,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
                       : 'bg-gray-700 border-gray-400'
                     }
                   `}>
-                    <div className="text-sm font-bold">{stage.age}</div>
+                    <div className="text-sm font-bold text-white">{stage.age}</div>
                   </div>
                   
                   {/* Year Label */}
                   <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="text-sm font-medium">{stage.year}</div>
-                    <div className="text-xs text-gray-400">{stage.career.split(' ')[0]}</div>
+                    <div className="text-sm font-medium text-white">{stage.year}</div>
+                    <div className="text-xs text-gray-300">{stage.career.split(' ')[0]}</div>
                   </div>
                   
                   {/* Progress Bars */}
@@ -300,8 +300,8 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       {/* Timeline Scrubber */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-medium text-gray-300">Navigate Timeline</span>
-          <span className="text-sm text-blue-300">{currentStage.year} • {currentStage.location}</span>
+          <span className="text-sm font-medium text-gray-200">Navigate Timeline</span>
+          <span className="text-sm text-blue-200">{currentStage.year} • {currentStage.location}</span>
         </div>
         <Slider
           value={[currentAge]}
@@ -315,37 +315,37 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
 
       {/* Financial Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-green-600/20 border-green-400/30">
+        <Card className="bg-green-600/30 border-green-400/50 backdrop-blur-sm">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-green-400" />
+              <DollarSign className="h-5 w-5 text-green-300" />
               <div>
-                <p className="text-sm text-gray-300">Annual Income</p>
-                <p className="text-xl font-bold text-green-400">{formatCurrency(currentStage.income)}</p>
+                <p className="text-sm text-green-100">Annual Income</p>
+                <p className="text-xl font-bold text-white">{formatCurrency(currentStage.income)}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-blue-600/20 border-blue-400/30">
+        <Card className="bg-blue-600/30 border-blue-400/50 backdrop-blur-sm">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Trophy className="h-5 w-5 text-blue-400" />
+              <Trophy className="h-5 w-5 text-blue-300" />
               <div>
-                <p className="text-sm text-gray-300">Total Savings</p>
-                <p className="text-xl font-bold text-blue-400">{formatCurrency(currentStage.savings)}</p>
+                <p className="text-sm text-blue-100">Total Savings</p>
+                <p className="text-xl font-bold text-white">{formatCurrency(currentStage.savings)}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-purple-600/20 border-purple-400/30">
+        <Card className="bg-purple-600/30 border-purple-400/50 backdrop-blur-sm">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Briefcase className="h-5 w-5 text-purple-400" />
+              <Briefcase className="h-5 w-5 text-purple-300" />
               <div>
-                <p className="text-sm text-gray-300">Career Level</p>
-                <p className="text-xl font-bold text-purple-400">{currentStage.career}</p>
+                <p className="text-sm text-purple-100">Career Level</p>
+                <p className="text-xl font-bold text-white">{currentStage.career}</p>
               </div>
             </div>
           </CardContent>
