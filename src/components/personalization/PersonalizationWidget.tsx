@@ -13,12 +13,22 @@ interface PersonalizationWidgetProps {
   onClose: () => void;
 }
 
+interface LocalProfileState {
+  workLifeBalanceWeight: number;
+  salaryWeight: number;
+  growthWeight: number;
+  stabilityWeight: number;
+  riskTolerance: 'low' | 'medium' | 'high';
+  preferredLocations: string[];
+  careerInterests: string[];
+}
+
 const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
   profile,
   onUpdateProfile,
   onClose
 }) => {
-  const [localProfile, setLocalProfile] = useState(profile || {
+  const [localProfile, setLocalProfile] = useState<LocalProfileState>(profile || {
     workLifeBalanceWeight: 50,
     salaryWeight: 30,
     growthWeight: 15,
@@ -28,7 +38,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
     careerInterests: []
   });
 
-  const handleWeightChange = (key: string, value: number[]) => {
+  const handleWeightChange = (key: keyof LocalProfileState, value: number[]) => {
     setLocalProfile(prev => ({ ...prev, [key]: value[0] }));
   };
 
@@ -63,7 +73,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
           <Brain className="h-5 w-5 mr-2 text-purple-400" />
           AI Personalization
         </CardTitle>
-        <Button variant="ghost" size="sm" onClick={onClose}>
+        <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-300 hover:text-white hover:bg-white/10">
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
@@ -131,7 +141,11 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                 variant={localProfile.riskTolerance === risk ? "default" : "outline"}
                 size="sm"
                 onClick={() => setLocalProfile(prev => ({ ...prev, riskTolerance: risk }))}
-                className="flex-1 text-xs"
+                className={`flex-1 text-xs ${
+                  localProfile.riskTolerance === risk 
+                    ? "bg-purple-600 text-white hover:bg-purple-700" 
+                    : "border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 {risk.charAt(0).toUpperCase() + risk.slice(1)}
               </Button>
@@ -147,7 +161,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
               <Badge
                 key={location}
                 variant="secondary"
-                className="text-xs cursor-pointer hover:bg-red-500/20"
+                className="text-xs cursor-pointer hover:bg-red-500/20 bg-gray-700 text-gray-200"
                 onClick={() => removeLocation(location)}
               >
                 {location} ×
@@ -163,7 +177,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={() => addLocation(location)}
-                  className="text-xs h-7"
+                  className="text-xs h-7 border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
                 >
                   + {location}
                 </Button>
@@ -187,7 +201,11 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                     : [...interests, career];
                   setLocalProfile(prev => ({ ...prev, careerInterests: updated }));
                 }}
-                className="text-xs h-7"
+                className={`text-xs h-7 ${
+                  localProfile.careerInterests?.includes(career)
+                    ? "bg-pink-600 text-white hover:bg-pink-700"
+                    : "border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 {career}
               </Button>
@@ -214,10 +232,17 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
         )}
 
         <div className="flex space-x-2 pt-2">
-          <Button variant="outline" onClick={onClose} className="flex-1">
+          <Button 
+            variant="outline" 
+            onClick={onClose} 
+            className="flex-1 border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} className="flex-1 bg-purple-600 hover:bg-purple-700">
+          <Button 
+            onClick={handleSave} 
+            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+          >
             Save Preferences
           </Button>
         </div>

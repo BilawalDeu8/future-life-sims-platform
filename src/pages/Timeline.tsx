@@ -1,14 +1,14 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Play, Pause, RotateCcw, Bookmark, Share2, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, Play, Pause, RotateCcw, Bookmark, Share2, ZoomIn, ZoomOut, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import YearNode from "@/components/timeline/YearNode";
 import LifeDecisionModal from "@/components/timeline/LifeDecisionModal";
 import TimelineControls from "@/components/timeline/TimelineControls";
 import RealWorldDataDisplay from "@/components/data/RealWorldDataDisplay";
 import PersonalizationWidget from "@/components/personalization/PersonalizationWidget";
+import CareerSelector from "@/components/timeline/CareerSelector";
 import { usePersonalization } from "@/hooks/usePersonalization";
 import { useRealWorldData } from "@/hooks/useRealWorldData";
 
@@ -48,6 +48,9 @@ const Timeline = () => {
   const [currentDecision, setCurrentDecision] = useState<any>(null);
   const [bookmarkedYears, setBookmarkedYears] = useState<number[]>([]);
   const [showPersonalization, setShowPersonalization] = useState(false);
+  const [showCareerSelector, setShowCareerSelector] = useState(false);
+  const [selectedCareerPath, setSelectedCareerPath] = useState<any>(null);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
 
   // Initialize personalization and real-world data hooks
   const userId = "demo-user"; // In real app, get from auth
@@ -98,11 +101,13 @@ const Timeline = () => {
 
   // Load real-world data on component mount
   useEffect(() => {
-    fetchScenarioData("Software Developer", "San Francisco, CA");
+    const occupation = selectedCareerPath?.title || "Software Developer";
+    const location = selectedCompany?.locations[0] || "San Francisco, CA";
+    fetchScenarioData(occupation, location);
     if (profile) {
       trackEngagement("timeline_view");
     }
-  }, [profile]);
+  }, [profile, selectedCareerPath, selectedCompany]);
 
   const scrollToYear = (year: number) => {
     if (timelineRef.current) {
@@ -178,6 +183,20 @@ const Timeline = () => {
     autoPlay();
   }, [isPlaying, currentYear]);
 
+  const handleCareerSelection = (career: any, company?: any) => {
+    setSelectedCareerPath(career);
+    setSelectedCompany(company);
+    setShowCareerSelector(false);
+    
+    // Fetch real-world data for the selected career and company
+    const location = company?.locations[0] || "San Francisco, CA";
+    fetchScenarioData(career.title, location);
+    
+    if (profile) {
+      trackEngagement("career_selected", 3);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
       {/* Header */}
@@ -187,7 +206,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               onClick={() => navigate('/simulation')}
-              className="text-white hover:bg-white/10"
+              className="text-white hover:bg-white/10 border-0"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Simulation
@@ -196,14 +215,28 @@ const Timeline = () => {
             <div className="text-center">
               <h1 className="text-2xl font-bold">Your Personalized Timeline</h1>
               <p className="text-blue-200">Year {currentYear} • Age {22 + (currentYear - 2024)}</p>
+              {selectedCareerPath && (
+                <p className="text-sm text-purple-200">
+                  {selectedCareerPath.title} {selectedCompany && `at ${selectedCompany.name}`}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setShowCareerSelector(true)}
+                className="text-white border-blue-500/50 hover:bg-blue-500/20 hover:text-white bg-blue-500/10"
+              >
+                <Briefcase className="h-4 w-4 mr-2" />
+                Career
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setShowPersonalization(!showPersonalization)}
-                className="text-white border-white/20 hover:bg-white/10"
+                className="text-white border-purple-500/50 hover:bg-purple-500/20 hover:text-white bg-purple-500/10"
               >
                 Personalize
               </Button>
@@ -232,6 +265,14 @@ const Timeline = () => {
             onClose={() => setShowPersonalization(false)}
           />
         </div>
+      )}
+
+      {/* Career Selector Modal */}
+      {showCareerSelector && (
+        <CareerSelector
+          onSelectCareer={handleCareerSelection}
+          onClose={() => setShowCareerSelector(false)}
+        />
       )}
 
       {/* Real-World Data Display */}

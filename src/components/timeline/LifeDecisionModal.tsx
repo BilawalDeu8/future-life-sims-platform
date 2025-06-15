@@ -54,21 +54,21 @@ const LifeDecisionModal: React.FC<LifeDecisionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 z-[100]">
       <Card className="bg-gray-900/98 border-purple-500/50 max-w-2xl w-full mx-4 animate-scale-in shadow-2xl">
         <CardHeader className="relative">
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="absolute right-2 top-2 text-gray-400 hover:text-white z-10"
+            className="absolute right-2 top-2 text-gray-400 hover:text-white hover:bg-white/10 z-10"
           >
             <X className="h-4 w-4" />
           </Button>
           
           <div className="flex items-center space-x-2 mb-2">
             <Clock className="h-5 w-5 text-blue-400" />
-            <Badge variant="outline" className="text-blue-300 border-blue-500">
+            <Badge variant="outline" className="text-blue-300 border-blue-500 bg-blue-500/10">
               Year {decision.year}
             </Badge>
           </div>
@@ -160,14 +160,14 @@ const LifeDecisionModal: React.FC<LifeDecisionModalProps> = ({
             <Button
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
+              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
             >
               Think More
             </Button>
             <Button
               onClick={handleConfirmDecision}
               disabled={selectedOption === null}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50"
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 text-white"
             >
               Make Decision
             </Button>
