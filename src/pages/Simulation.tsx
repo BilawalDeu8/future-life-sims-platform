@@ -248,8 +248,8 @@ const Simulation = () => {
   // Mobile view components
   const mobileViews = [
     // Header view
-    <div key="header" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4">
-      <div className="text-center py-8">
+    <div key="header" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4 flex flex-col">
+      <div className="text-center py-8 flex-shrink-0">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
           Life Path Simulator
         </h1>
@@ -259,48 +259,55 @@ const Simulation = () => {
         <p className="text-sm text-blue-200 mb-6">
           Personalized for {userLocation}
         </p>
-        <div className="space-y-3">
-          <Button
-            onClick={() => navigate('/timeline')}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-3 text-white"
-          >
-            Experience Your Life Timeline
-          </Button>
-          <Button
-            onClick={() => setShowComparison(true)}
-            className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 py-3 text-white"
-          >
-            <GitCompare className="h-5 w-5 mr-2" />
-            Compare Life Paths
-          </Button>
-          <Button
-            onClick={() => navigate('/community')}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 text-white"
-          >
-            <Users className="h-5 w-5 mr-2" />
-            Connect with Community
-          </Button>
-          <Button
-            onClick={() => navigate('/timeline')}
-            className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 py-3 text-white"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Create Custom Path
-          </Button>
-        </div>
+      </div>
+      
+      <div className="flex-1 flex flex-col justify-center space-y-3 pb-8">
+        <Button
+          onClick={() => navigate('/timeline')}
+          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-4 text-white text-lg"
+        >
+          Experience Your Life Timeline
+        </Button>
+        <Button
+          onClick={() => setShowComparison(true)}
+          className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 py-4 text-white text-lg"
+        >
+          <GitCompare className="h-5 w-5 mr-2" />
+          Compare Life Paths
+        </Button>
+        <Button
+          onClick={() => navigate('/community')}
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-4 text-white text-lg"
+        >
+          <Users className="h-5 w-5 mr-2" />
+          Connect with Community
+        </Button>
+        <Button
+          onClick={() => navigate('/timeline')}
+          className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 py-4 text-white text-lg"
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          Create Custom Path
+        </Button>
       </div>
     </div>,
     // Scenarios grid view
-    <div key="scenarios" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4">
-      <div className="grid grid-cols-1 gap-6">
-        {scenarios.map((scenario) => (
-          <TouchOptimizedCard
-            key={scenario.id}
-            scenario={scenario}
-            onSelect={setSelectedScenario}
-            index={scenarios.indexOf(scenario)}
-          />
-        ))}
+    <div key="scenarios" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+      <div className="p-4 pb-20">
+        <div className="text-center mb-6 pt-4">
+          <h2 className="text-2xl font-bold text-white mb-2">Career Scenarios</h2>
+          <p className="text-blue-200">Tap any path to explore</p>
+        </div>
+        <div className="grid grid-cols-1 gap-6">
+          {scenarios.map((scenario) => (
+            <TouchOptimizedCard
+              key={scenario.id}
+              scenario={scenario}
+              onSelect={setSelectedScenario}
+              index={scenarios.indexOf(scenario)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   ];
@@ -319,21 +326,23 @@ const Simulation = () => {
       )}
 
       {isMobile ? (
-        <>
+        <div className="h-screen flex flex-col">
           <MobileHeader
             onPersonalizationClick={() => setShowPersonalization(true)}
             onComparisonClick={() => setShowComparison(true)}
             onCommunityClick={() => navigate('/community')}
             onTimelineClick={() => navigate('/timeline')}
           />
-          <SwipeNavigation
-            currentIndex={currentMobileView}
-            onIndexChange={setCurrentMobileView}
-            className="flex-1"
-          >
-            {mobileViews}
-          </SwipeNavigation>
-        </>
+          <div className="flex-1 overflow-hidden">
+            <SwipeNavigation
+              currentIndex={currentMobileView}
+              onIndexChange={setCurrentMobileView}
+              className="h-full"
+            >
+              {mobileViews}
+            </SwipeNavigation>
+          </div>
+        </div>
       ) : (
         <>
           {/* Desktop Header */}
