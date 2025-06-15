@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, DollarSign, Clock, Zap, Users } from "lucide-react";
+import { ArrowRight, MapPin, DollarSign, Clock, Zap, Users, GitCompare } from "lucide-react";
 import ScenarioDetail from "@/components/simulation/ScenarioDetail";
+import ScenarioComparison from "@/components/simulation/ScenarioComparison";
 import { useNavigate } from 'react-router-dom';
 
 interface LifeScenario {
@@ -110,6 +111,16 @@ const scenarios: LifeScenario[] = [
 const Simulation = () => {
   const navigate = useNavigate();
   const [selectedScenario, setSelectedScenario] = useState<LifeScenario | null>(null);
+  const [showComparison, setShowComparison] = useState(false);
+
+  if (showComparison) {
+    return (
+      <ScenarioComparison 
+        scenarios={scenarios} 
+        onBack={() => setShowComparison(false)}
+      />
+    );
+  }
 
   if (selectedScenario) {
     return (
@@ -138,6 +149,13 @@ const Simulation = () => {
             Experience Your Life Timeline
           </Button>
           <Button
+            onClick={() => setShowComparison(true)}
+            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3"
+          >
+            <GitCompare className="h-5 w-5 mr-2" />
+            Compare Life Paths
+          </Button>
+          <Button
             onClick={() => navigate('/community')}
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3"
           >
@@ -149,89 +167,82 @@ const Simulation = () => {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
-        {selectedScenario ? (
-          <ScenarioDetail 
-            scenario={selectedScenario} 
-            onBack={() => setSelectedScenario(null)} 
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {scenarios.map((scenario) => (
-              <Card 
-                key={scenario.id}
-                className="bg-white/10 backdrop-blur-sm border-white/20 hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden"
-                onClick={() => setSelectedScenario(scenario)}
-              >
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <img 
-                    src={`https://images.unsplash.com/${scenario.image}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
-                    alt={scenario.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-2xl font-bold text-white mb-1">{scenario.title}</h3>
-                    <p className="text-blue-200">{scenario.career}</p>
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {scenarios.map((scenario) => (
+            <Card 
+              key={scenario.id}
+              className="bg-white/10 backdrop-blur-sm border-white/20 hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden"
+              onClick={() => setSelectedScenario(scenario)}
+            >
+              <div className="relative overflow-hidden rounded-t-lg">
+                <img 
+                  src={`https://images.unsplash.com/${scenario.image}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
+                  alt={scenario.title}
+                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-2xl font-bold text-white mb-1">{scenario.title}</h3>
+                  <p className="text-blue-200">{scenario.career}</p>
                 </div>
-                
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2 text-purple-400" />
-                        <span>{scenario.location}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1 text-green-400" />
-                        <span>{scenario.salaryRange}</span>
-                      </div>
+              </div>
+              
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-2 text-purple-400" />
+                      <span>{scenario.location}</span>
                     </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-blue-400" />
-                          <span className="text-sm">Work-Life Balance</span>
-                        </div>
-                        <div className="w-24 bg-white/20 rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${scenario.workLifeBalance}%` }}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <Zap className="h-4 w-4 mr-2 text-yellow-400" />
-                          <span className="text-sm">Stress Level</span>
-                        </div>
-                        <div className="w-24 bg-white/20 rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-yellow-400 to-red-400 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${scenario.stressLevel}%` }}
-                          />
-                        </div>
-                      </div>
+                    <div className="flex items-center">
+                      <DollarSign className="h-4 w-4 mr-1 text-green-400" />
+                      <span>{scenario.salaryRange}</span>
                     </div>
-                    
-                    <p className="text-blue-200 text-sm leading-relaxed">
-                      {scenario.description}
-                    </p>
-                    
-                    <Button 
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300"
-                    >
-                      Live This Future
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-blue-400" />
+                        <span className="text-sm">Work-Life Balance</span>
+                      </div>
+                      <div className="w-24 bg-white/20 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${scenario.workLifeBalance}%` }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Zap className="h-4 w-4 mr-2 text-yellow-400" />
+                        <span className="text-sm">Stress Level</span>
+                      </div>
+                      <div className="w-24 bg-white/20 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-yellow-400 to-red-400 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${scenario.stressLevel}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-blue-200 text-sm leading-relaxed">
+                    {scenario.description}
+                  </p>
+                  
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300"
+                  >
+                    Live This Future
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
