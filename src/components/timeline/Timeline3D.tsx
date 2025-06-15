@@ -1,13 +1,9 @@
 
-import React, { Suspense, useState, useRef, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, Text, Box, Cylinder, Sphere } from '@react-three/drei';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane } from "lucide-react";
-import { EnhancedHomeModel, EnhancedWorkplaceModel, EnhancedVehicleModel } from './Enhanced3DModels';
-import * as THREE from 'three';
 
 interface LifeStage {
   age: number;
@@ -56,185 +52,6 @@ interface Timeline3DProps {
   careerPath: any;
   onBack: () => void;
 }
-
-const Scene3D: React.FC<{ currentStage: any; onStageClick: () => void }> = ({ currentStage, onStageClick }) => {
-  const { camera } = useThree();
-  const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
-  
-  useEffect(() => {
-    camera.position.set(12, 10, 12);
-    camera.lookAt(0, 0, 0);
-  }, [camera]);
-
-  return (
-    <>
-      {/* Dynamic sky based on stage */}
-      <color attach="background" args={[currentStage.environment.skyColor]} />
-      
-      {/* Advanced lighting setup */}
-      <ambientLight intensity={0.4} color={currentStage.environment.ambientColor} />
-      <directionalLight 
-        position={[10, 15, 5]} 
-        intensity={1.2} 
-        castShadow 
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-      />
-      <pointLight position={[0, 10, 0]} intensity={0.5} color="#FFD700" />
-      
-      {/* Enhanced ground with patterns */}
-      <Box args={[25, 0.1, 25]} position={[0, -0.05, 0]} receiveShadow>
-        <meshStandardMaterial 
-          color={currentStage.environment.neighborhood === 'luxury' ? '#90EE90' : '#228B22'} 
-          roughness={0.8}
-        />
-      </Box>
-      
-      {/* Road network */}
-      <Box args={[25, 0.11, 1.2]} position={[0, -0.04, 0]}>
-        <meshStandardMaterial color="#696969" />
-      </Box>
-      <Box args={[1.2, 0.11, 25]} position={[0, -0.04, 0]}>
-        <meshStandardMaterial color="#696969" />
-      </Box>
-      
-      {/* Road markings */}
-      {Array.from({ length: 5 }, (_, i) => (
-        <Box key={i} args={[0.1, 0.12, 2]} position={[0, -0.03, -8 + i * 4]}>
-          <meshStandardMaterial color="#FFFF00" />
-        </Box>
-      ))}
-      
-      {/* Enhanced building models */}
-      <EnhancedHomeModel 
-        stage={currentStage} 
-        isSelected={selectedBuilding === 'home'}
-        onHover={() => {}}
-        onClick={() => setSelectedBuilding('home')}
-      />
-      
-      <EnhancedWorkplaceModel 
-        stage={currentStage} 
-        isSelected={selectedBuilding === 'work'}
-        onHover={() => {}}
-        onClick={() => setSelectedBuilding('work')}
-      />
-      
-      <EnhancedVehicleModel 
-        stage={currentStage} 
-        isSelected={selectedBuilding === 'vehicle'}
-        onHover={() => {}}
-        onClick={() => setSelectedBuilding('vehicle')}
-      />
-      
-      {/* Lifestyle elements with enhanced detail */}
-      <group>
-        {/* Gym with equipment visible */}
-        {currentStage.lifestyle.gym && (
-          <group position={[8, 0, 2]}>
-            <Box args={[2, 1.5, 1.5]} position={[0, 0.75, 0]}>
-              <meshStandardMaterial color="#FF6B6B" />
-            </Box>
-            <Text position={[0, 2, 0]} fontSize={0.2} color="white" anchorX="center">
-              GYM
-            </Text>
-            {/* Equipment inside */}
-            <Box args={[0.3, 0.3, 0.3]} position={[0.5, 0.15, 0]}>
-              <meshStandardMaterial color="#333333" />
-            </Box>
-          </group>
-        )}
-        
-        {/* Restaurant district */}
-        {Array.from({ length: currentStage.lifestyle.restaurants }, (_, i) => (
-          <group key={i} position={[10 + i * 1.5, 0, -3]}>
-            <Cylinder args={[0.6, 0.6, 1.2]} position={[0, 0.6, 0]}>
-              <meshStandardMaterial color="#FFA500" />
-            </Cylinder>
-            <Text position={[0, 1.5, 0]} fontSize={0.15} color="white" anchorX="center">
-              RESTAURANT
-            </Text>
-            {/* Outdoor seating */}
-            <Cylinder args={[0.2, 0.2, 0.05]} position={[0.8, 0.05, 0]}>
-              <meshStandardMaterial color="#8B4513" />
-            </Cylinder>
-          </group>
-        ))}
-        
-        {/* Family indicators with more detail */}
-        {currentStage.lifestyle.family && (
-          <group position={[currentStage.home.position[0] + 3, 0, currentStage.home.position[2] + 1]}>
-            <Sphere args={[0.25]} position={[0, 0.25, 0]}>
-              <meshStandardMaterial color="#FFB6C1" />
-            </Sphere>
-            <Sphere args={[0.18]} position={[0.5, 0.18, 0]}>
-              <meshStandardMaterial color="#FFB6C1" />
-            </Sphere>
-            <Sphere args={[0.12]} position={[0.3, 0.12, 0.3]}>
-              <meshStandardMaterial color="#FFB6C1" />
-            </Sphere>
-            <Text position={[0.3, 1, 0]} fontSize={0.2} color="white" anchorX="center">
-              FAMILY
-            </Text>
-          </group>
-        )}
-        
-        {/* Travel destinations */}
-        {currentStage.lifestyle.travel && (
-          <group position={[12, 0, 8]}>
-            <Sphere args={[0.4]} position={[0, 2.5, 0]}>
-              <meshStandardMaterial color="#00CED1" />
-            </Sphere>
-            <Cylinder args={[0.1, 0.1, 2]} position={[0, 1, 0]}>
-              <meshStandardMaterial color="#FFFFFF" />
-            </Cylinder>
-            <Text position={[0, 3.2, 0]} fontSize={0.2} color="white" anchorX="center">
-              TRAVEL
-            </Text>
-          </group>
-        )}
-      </group>
-      
-      {/* Neighborhood context buildings */}
-      {Array.from({ length: 12 }, (_, i) => {
-        const angle = (i / 12) * Math.PI * 2;
-        const radius = 15;
-        const x = Math.cos(angle) * radius;
-        const z = Math.sin(angle) * radius;
-        const height = 1.5 + Math.random() * 3;
-        
-        return (
-          <Box 
-            key={i}
-            args={[1.2, height, 1.2]} 
-            position={[x, height/2, z]}
-          >
-            <meshStandardMaterial 
-              color={currentStage.environment.neighborhood === 'luxury' ? '#F5F5DC' : '#D3D3D3'} 
-              opacity={0.6} 
-              transparent 
-            />
-          </Box>
-        );
-      })}
-      
-      {/* Weather effects based on season/mood */}
-      {currentStage.environment.neighborhood === 'luxury' && (
-        <group>
-          {Array.from({ length: 20 }, (_, i) => (
-            <Sphere key={i} args={[0.02]} position={[
-              (Math.random() - 0.5) * 30,
-              Math.random() * 10 + 5,
-              (Math.random() - 0.5) * 30
-            ]}>
-              <meshStandardMaterial color="#FFFFFF" opacity={0.8} transparent />
-            </Sphere>
-          ))}
-        </group>
-      )}
-    </>
-  );
-};
 
 const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const [currentAge, setCurrentAge] = useState(22);
@@ -391,28 +208,18 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
         </div>
       </div>
 
-      {/* 3D Canvas */}
-      <div className="relative h-[70vh]">
-        <Canvas shadows camera={{ position: [10, 8, 10], fov: 60 }}>
-          <Suspense fallback={null}>
-            <Scene3D 
-              currentStage={currentStage} 
-              onStageClick={() => console.log('Stage clicked')}
-            />
-            <OrbitControls 
-              enablePan={true}
-              enableZoom={true}
-              enableRotate={true}
-              minDistance={5}
-              maxDistance={20}
-            />
-            <Environment preset="sunset" />
-          </Suspense>
-        </Canvas>
-        
-        {/* Loading indicator */}
-        <div className="absolute top-4 right-4 text-white text-sm opacity-70">
-          Click and drag to explore • Scroll to zoom
+      {/* Placeholder for 3D Canvas */}
+      <div className="relative h-[70vh] flex items-center justify-center">
+        <div className="text-center bg-black/30 backdrop-blur-sm p-8 rounded-lg border border-white/20">
+          <h2 className="text-3xl font-bold mb-4">3D Life Timeline Loading...</h2>
+          <p className="text-lg text-blue-200 mb-4">
+            Revolutionary 3D experience coming soon!
+          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <div className="w-4 h-4 bg-purple-500 rounded-full animate-bounce"></div>
+            <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-4 h-4 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
         </div>
       </div>
 
