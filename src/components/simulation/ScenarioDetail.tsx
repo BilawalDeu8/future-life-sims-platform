@@ -5,6 +5,7 @@ import DayInLifeSimulator from "./DayInLifeSimulator";
 import LifeSnapshotsGallery from "./LifeSnapshotsGallery";
 import RealityChallenges from "./RealityChallenges";
 import FinancialDashboard from "../financial/FinancialDashboard";
+import CareerTimeline from "../timeline/CareerTimeline";
 
 interface LifeScenario {
   id: string;
@@ -26,13 +27,15 @@ interface ScenarioDetailProps {
   onBack: () => void;
 }
 
-type ExplorationMode = 'overview' | 'dayInLife' | 'lifeSnapshots' | 'challenges' | 'financial';
+type ExplorationMode = 'overview' | 'dayInLife' | 'lifeSnapshots' | 'challenges' | 'financial' | 'timeline';
 
 const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => {
   const [currentMode, setCurrentMode] = useState<ExplorationMode>('overview');
 
   const renderCurrentMode = () => {
     switch (currentMode) {
+      case 'timeline':
+        return <CareerTimeline scenario={scenario} onBack={() => setCurrentMode('overview')} />;
       case 'dayInLife':
         return <DayInLifeSimulator scenario={scenario} onBack={() => setCurrentMode('overview')} />;
       case 'lifeSnapshots':
@@ -76,7 +79,16 @@ const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => 
             </div>
 
             {/* Exploration Modes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <button 
+                onClick={() => setCurrentMode('timeline')}
+                className="group bg-gradient-to-br from-indigo-600/80 to-purple-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-indigo-500/80 hover:to-purple-500/80 transition-all duration-300 hover:scale-105 text-left"
+              >
+                <Calendar className="h-12 w-12 text-white mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="text-xl font-bold text-white mb-2">Life Timeline</h3>
+                <p className="text-indigo-100 text-sm">Experience your career journey year by year</p>
+              </button>
+
               <button 
                 onClick={() => setCurrentMode('dayInLife')}
                 className="group bg-gradient-to-br from-purple-600/80 to-blue-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-purple-500/80 hover:to-blue-500/80 transition-all duration-300 hover:scale-105 text-left"
