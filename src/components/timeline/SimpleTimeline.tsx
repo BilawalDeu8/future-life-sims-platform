@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -285,13 +284,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
           {/* Age and Year Header with Better Contrast */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl p-4 border border-white/30 shadow-lg">
-                <h2 className="text-4xl font-bold text-white drop-shadow-lg">Age {currentStage.age}</h2>
-                <p className="text-blue-200 text-sm font-medium">{currentStage.year}</p>
+              <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl p-6 border border-white/30 shadow-lg">
+                <h2 className="text-5xl font-bold text-white drop-shadow-lg">{currentStage.age}</h2>
+                <p className="text-blue-200 text-lg font-medium mt-1">{currentStage.year}</p>
               </div>
               <div>
-                <p className="text-blue-200 text-lg font-medium">{currentStage.title}</p>
-                <p className="text-white/80 text-sm">{currentStage.location}</p>
+                <p className="text-blue-200 text-xl font-medium">{currentStage.title}</p>
+                <p className="text-white/80 text-base mt-1">{currentStage.location}</p>
               </div>
             </div>
             <div className="text-right bg-gradient-to-br from-green-500/30 to-green-600/30 rounded-xl p-4 border border-green-400/50">
@@ -432,19 +431,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
                     <div className="text-sm font-bold text-white">{stage.age}</div>
                   </div>
                   
-                  {/* Cleaner Year and Career Labels with Dark Background */}
-                  <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center w-32">
-                    <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600/50 shadow-lg">
-                      <div className="text-sm font-bold text-white mb-1">{stage.year}</div>
-                      <div className="text-xs text-gray-300 leading-tight">{stage.career}</div>
-                      <div className="text-xs text-blue-300 mt-1">{stage.location}</div>
+                  {/* Enhanced Labels with Better Spacing */}
+                  <div className="absolute -bottom-28 left-1/2 transform -translate-x-1/2 text-center w-36">
+                    <div className="bg-gray-900/95 backdrop-blur-sm rounded-xl p-4 border border-gray-600/50 shadow-lg space-y-2">
+                      <div className="text-base font-bold text-white">{stage.year}</div>
+                      <div className="text-sm text-gray-200 leading-relaxed">{stage.career}</div>
+                      <div className="text-sm text-blue-300">{stage.location}</div>
                     </div>
-                  </div>
-                  
-                  {/* Progress Bars */}
-                  <div className="absolute top-24 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                    <div className="w-2 bg-blue-500 rounded opacity-70" style={{ height: `${20 + index * 8}px` }}></div>
-                    <div className="w-2 bg-green-500 rounded opacity-70" style={{ height: `${10 + index * 6}px` }}></div>
                   </div>
                 </div>
               ))}
