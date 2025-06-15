@@ -143,8 +143,8 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                 onClick={() => setLocalProfile(prev => ({ ...prev, riskTolerance: risk }))}
                 className={`flex-1 text-xs ${
                   localProfile.riskTolerance === risk 
-                    ? "bg-purple-600 text-white hover:bg-purple-700" 
-                    : "border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-purple-600 text-white hover:bg-purple-700 border-purple-600" 
+                    : "bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
                 }`}
               >
                 {risk.charAt(0).toUpperCase() + risk.slice(1)}
@@ -177,7 +177,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={() => addLocation(location)}
-                  className="text-xs h-7 border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+                  className="text-xs h-7 bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
                 >
                   + {location}
                 </Button>
@@ -203,8 +203,8 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                 }}
                 className={`text-xs h-7 ${
                   localProfile.careerInterests?.includes(career)
-                    ? "bg-pink-600 text-white hover:bg-pink-700"
-                    : "border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                    : "bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
                 }`}
               >
                 {career}
@@ -235,13 +235,13 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
           <Button 
             variant="outline" 
             onClick={onClose} 
-            className="flex-1 border-gray-500 text-gray-300 hover:bg-white/10 hover:text-white"
+            className="flex-1 bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
           >
             Cancel
           </Button>
           <Button 
             onClick={handleSave} 
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
           >
             Save Preferences
           </Button>
