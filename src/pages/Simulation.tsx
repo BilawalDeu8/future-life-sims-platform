@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +5,12 @@ import { ArrowRight, MapPin, DollarSign, Clock, Zap, Users, GitCompare, Settings
 import ScenarioDetail from "@/components/simulation/ScenarioDetail";
 import ScenarioComparison from "@/components/simulation/ScenarioComparison";
 import PersonalizationWidget from "@/components/personalization/PersonalizationWidget";
+import TouchOptimizedCard from "@/components/mobile/TouchOptimizedCard";
+import SwipeNavigation from "@/components/mobile/SwipeNavigation";
+import MobileHeader from "@/components/mobile/MobileHeader";
 import { useNavigate } from 'react-router-dom';
 import { usePersonalization } from '@/hooks/usePersonalization';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LifeScenario {
   id: string;
@@ -31,6 +34,7 @@ const Simulation = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [showPersonalization, setShowPersonalization] = useState(false);
   const [scenarios, setScenarios] = useState<LifeScenario[]>([]);
+  const isMobile = useIsMobile();
 
   // Get user's location from localStorage (set during onboarding)
   const getUserLocation = () => {
