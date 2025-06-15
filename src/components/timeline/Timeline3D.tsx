@@ -310,52 +310,10 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-black/20 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-full px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              onClick={onBack}
-              className="text-white hover:bg-white/20 border border-white/30 bg-white/10"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Simulation
-            </Button>
-            
-            <div className="text-center">
-              <h1 className="text-2xl font-bold">3D Life World</h1>
-              <p className="text-blue-200">Age {currentAge} • {careerPath.title}</p>
-              <p className="text-sm text-purple-200">{currentStage.career.level} • {formatCurrency(currentStage.financials.income)}/year</p>
-              <p className="text-xs text-green-200">{currentStage.location}</p>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="text-white border-green-400 hover:bg-green-500/30 hover:text-white bg-green-500/20"
-              >
-                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(viewMode === 'city' ? 'street' : 'city')}
-                className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
-              >
-                <Gamepad2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col lg:flex-row h-screen">
         {/* 3D Interactive World */}
-        <div className="flex-1">
-          <div className="relative h-[70vh] bg-gradient-to-b from-blue-900/30 to-purple-900/30">
+        <div className="flex-1 flex flex-col">
+          <div className="relative flex-1 bg-gradient-to-b from-blue-900/30 to-purple-900/30">
             <Suspense fallback={
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -372,17 +330,58 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
               />
             </Suspense>
 
+            {/* Back Button - Top Left */}
+            <div className="absolute top-4 left-4">
+              <Button
+                variant="ghost"
+                onClick={onBack}
+                className="text-white hover:bg-white/20 border border-white/30 bg-white/10"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Selection
+              </Button>
+            </div>
+
             {/* View Mode Indicator */}
-            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
+            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-green-400" />
                 <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
               </div>
             </div>
 
+            {/* Controls - Top Center */}
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm px-6 py-2 rounded-lg border border-white/20">
+              <div className="flex items-center space-x-4">
+                <div className="text-center">
+                  <h2 className="text-lg font-bold">Age {currentAge}</h2>
+                  <p className="text-xs text-blue-200">{currentStage.career.level} • {formatCurrency(currentStage.financials.income)}/year</p>
+                  <p className="text-xs text-green-200">{currentStage.location}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="text-white border-green-400 hover:bg-green-500/30 hover:text-white bg-green-500/20"
+                  >
+                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setViewMode(viewMode === 'city' ? 'street' : 'city')}
+                    className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
+                  >
+                    <Gamepad2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Decision Trigger Button */}
             {[25, 30, 35].includes(currentAge) && (
-              <div className="absolute top-4 right-4">
+              <div className="absolute bottom-20 right-4">
                 <Button
                   onClick={() => handleDecisionClick(currentAge)}
                   className="bg-purple-600 hover:bg-purple-700 text-white animate-bounce"
@@ -471,63 +470,6 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           </CardContent>
         </Card>
       )}
-
-      {/* Enhanced Details Panel */}
-      <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-60 overflow-y-auto lg:right-1/3">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center">
-                <Home className="h-4 w-4 mr-2" />
-                Living
-              </h3>
-              <p className="text-white font-medium">{currentStage.home.type.toUpperCase()}</p>
-              <p className="text-gray-300 text-sm">{currentStage.environment.neighborhood} neighborhood</p>
-              <p className="text-xs text-green-300">{currentStage.location}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-green-300 mb-2 flex items-center">
-                <Building className="h-4 w-4 mr-2" />
-                Career
-              </h3>
-              <p className="text-white font-medium">{currentStage.career.level} {currentStage.career.title}</p>
-              <p className="text-gray-300 text-sm">{formatCurrency(currentStage.financials.income)}/year</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-yellow-300 mb-2 flex items-center">
-                <Car className="h-4 w-4 mr-2" />
-                Transportation
-              </h3>
-              <p className="text-white font-medium">{currentStage.vehicle.type.toUpperCase()}</p>
-              <p className="text-gray-300 text-sm">
-                {currentStage.vehicle.type === 'none' ? 'Public transport' : 'Personal vehicle'}
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-purple-300 mb-2 flex items-center">
-                <Users className="h-4 w-4 mr-2" />
-                Lifestyle
-              </h3>
-              <p className="text-white font-medium">
-                {currentStage.lifestyle.family ? 'Family life' : 'Single/Dating'}
-              </p>
-              <div className="flex space-x-2 mt-1">
-                {currentStage.lifestyle.gym && <Trophy className="h-3 w-3 text-red-400" />}
-                {currentStage.lifestyle.travel && <Plane className="h-3 w-3 text-blue-400" />}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-pink-300 mb-2">Finances</h3>
-              <p className="text-white font-medium">
-                {formatCurrency(currentStage.financials.savings)} saved
-              </p>
-              <p className="text-gray-300 text-sm">
-                Net worth: {formatCurrency(currentStage.financials.netWorth)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Decision Modal */}
       {showDecisionModal && currentDecision && (
