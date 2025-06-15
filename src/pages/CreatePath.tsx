@@ -147,14 +147,14 @@ const CreatePath = () => {
             <Button
               onClick={() => navigate('/simulation')}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/20"
+              className="border-white/50 text-white hover:bg-white/20 hover:text-white bg-white/10 backdrop-blur-sm"
             >
               Browse Sample Paths
             </Button>
             <Button
               onClick={() => navigate('/community')}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/20"
+              className="border-white/50 text-white hover:bg-white/20 hover:text-white bg-white/10 backdrop-blur-sm"
             >
               See Community Paths
             </Button>
