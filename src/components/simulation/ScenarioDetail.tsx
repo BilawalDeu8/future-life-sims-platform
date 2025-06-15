@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Play, Calendar, Eye, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Play, Calendar, Eye, Gamepad2, DollarSign } from "lucide-react";
 import DayInLifeSimulator from "./DayInLifeSimulator";
 import LifeSnapshotsGallery from "./LifeSnapshotsGallery";
 import RealityChallenges from "./RealityChallenges";
+import FinancialDashboard from "../financial/FinancialDashboard";
 
 interface LifeScenario {
   id: string;
@@ -26,7 +26,7 @@ interface ScenarioDetailProps {
   onBack: () => void;
 }
 
-type ExplorationMode = 'overview' | 'dayInLife' | 'lifeSnapshots' | 'challenges';
+type ExplorationMode = 'overview' | 'dayInLife' | 'lifeSnapshots' | 'challenges' | 'financial';
 
 const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => {
   const [currentMode, setCurrentMode] = useState<ExplorationMode>('overview');
@@ -39,6 +39,8 @@ const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => 
         return <LifeSnapshotsGallery scenario={scenario} onBack={() => setCurrentMode('overview')} />;
       case 'challenges':
         return <RealityChallenges scenario={scenario} onBack={() => setCurrentMode('overview')} />;
+      case 'financial':
+        return <FinancialDashboard scenario={scenario} onBack={() => setCurrentMode('overview')} />;
       default:
         return (
           <div className="space-y-8">
@@ -74,14 +76,14 @@ const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => 
             </div>
 
             {/* Exploration Modes */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <button 
                 onClick={() => setCurrentMode('dayInLife')}
                 className="group bg-gradient-to-br from-purple-600/80 to-blue-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-purple-500/80 hover:to-blue-500/80 transition-all duration-300 hover:scale-105 text-left"
               >
                 <Play className="h-12 w-12 text-white mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold text-white mb-2">Day in the Life</h3>
-                <p className="text-blue-100">Experience a typical day from wake up to bedtime</p>
+                <h3 className="text-xl font-bold text-white mb-2">Day in the Life</h3>
+                <p className="text-blue-100 text-sm">Experience a typical day from wake up to bedtime</p>
               </button>
 
               <button 
@@ -89,8 +91,8 @@ const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => 
                 className="group bg-gradient-to-br from-pink-600/80 to-purple-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-pink-500/80 hover:to-purple-500/80 transition-all duration-300 hover:scale-105 text-left"
               >
                 <Eye className="h-12 w-12 text-white mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold text-white mb-2">Life Snapshots</h3>
-                <p className="text-pink-100">See your life 1, 5, and 10 years from now</p>
+                <h3 className="text-xl font-bold text-white mb-2">Life Snapshots</h3>
+                <p className="text-pink-100 text-sm">See your life 1, 5, and 10 years from now</p>
               </button>
 
               <button 
@@ -98,8 +100,17 @@ const ScenarioDetail: React.FC<ScenarioDetailProps> = ({ scenario, onBack }) => 
                 className="group bg-gradient-to-br from-orange-600/80 to-red-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-orange-500/80 hover:to-red-500/80 transition-all duration-300 hover:scale-105 text-left"
               >
                 <Gamepad2 className="h-12 w-12 text-white mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold text-white mb-2">Reality Challenges</h3>
-                <p className="text-orange-100">Navigate real obstacles and decisions</p>
+                <h3 className="text-xl font-bold text-white mb-2">Reality Challenges</h3>
+                <p className="text-orange-100 text-sm">Navigate real obstacles and decisions</p>
+              </button>
+
+              <button 
+                onClick={() => setCurrentMode('financial')}
+                className="group bg-gradient-to-br from-green-600/80 to-emerald-600/80 backdrop-blur-sm rounded-xl p-8 border border-white/20 hover:from-green-500/80 hover:to-emerald-500/80 transition-all duration-300 hover:scale-105 text-left"
+              >
+                <DollarSign className="h-12 w-12 text-white mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="text-xl font-bold text-white mb-2">Financial Reality</h3>
+                <p className="text-green-100 text-sm">Explore budgets, investments, and financial planning</p>
               </button>
             </div>
           </div>
