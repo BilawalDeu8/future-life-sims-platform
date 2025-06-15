@@ -12,6 +12,8 @@ import Onboarding from "./pages/Onboarding";
 import Simulation from "./pages/Simulation";
 import Timeline from "./pages/Timeline";
 import Community from "./pages/Community";
+import CreatePath from "./pages/CreatePath";
+import RealWorldData from "./pages/RealWorldData";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -99,6 +101,16 @@ const App = () => (
           <Route path="/timeline" element={
             <ProtectedRoute>
               <Timeline />
+            </ProtectedRoute>
+          } />
+          <Route path="/create-path" element={
+            <ProtectedRoute>
+              <CreatePath />
+            </ProtectedRoute>
+          } />
+          <Route path="/real-world-data" element={
+            <ProtectedRoute>
+              <RealWorldData />
             </ProtectedRoute>
           } />
           <Route path="/community" element={

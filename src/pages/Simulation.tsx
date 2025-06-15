@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import PersonalizationWidget from "@/components/personalization/PersonalizationW
 import TouchOptimizedCard from "@/components/mobile/TouchOptimizedCard";
 import SwipeNavigation from "@/components/mobile/SwipeNavigation";
 import MobileHeader from "@/components/mobile/MobileHeader";
+import CommonLifeSimulations from "@/components/simulation/CommonLifeSimulations";
 import { useNavigate } from 'react-router-dom';
 import { usePersonalization } from '@/hooks/usePersonalization';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -261,12 +263,19 @@ const Simulation = () => {
         </p>
       </div>
       
-      <div className="flex-1 flex flex-col justify-center space-y-3 pb-8">
+      <div className="flex-1 flex flex-col justify-center space-y-4 pb-8 px-2">
         <Button
           onClick={() => navigate('/timeline')}
           className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-4 text-white text-lg"
         >
           Experience Your Life Timeline
+        </Button>
+        <Button
+          onClick={() => navigate('/create-path')}
+          className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 py-4 text-white text-lg"
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          Create Custom Path
         </Button>
         <Button
           onClick={() => setShowComparison(true)}
@@ -282,14 +291,11 @@ const Simulation = () => {
           <Users className="h-5 w-5 mr-2" />
           Connect with Community
         </Button>
-        <Button
-          onClick={() => navigate('/timeline')}
-          className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 py-4 text-white text-lg"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Create Custom Path
-        </Button>
       </div>
+    </div>,
+    // Common simulations view
+    <div key="common" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+      <CommonLifeSimulations onSelectScenario={setSelectedScenario} />
     </div>,
     // Scenarios grid view
     <div key="scenarios" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
@@ -366,39 +372,52 @@ const Simulation = () => {
             <p className="text-sm text-blue-200 mb-8">
               Scenarios personalized based on your location and preferences
             </p>
-            <div className="flex justify-center space-x-4">
-              <Button
-                onClick={() => navigate('/timeline')}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-8 py-3 text-white"
-              >
-                Experience Your Life Timeline
-              </Button>
-              <Button
-                onClick={() => setShowComparison(true)}
-                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3 text-white"
-              >
-                <GitCompare className="h-5 w-5 mr-2" />
-                Compare Life Paths
-              </Button>
-              <Button
-                onClick={() => navigate('/community')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 text-white"
-              >
-                <Users className="h-5 w-5 mr-2" />
-                Connect with Community
-              </Button>
-              <Button
-                onClick={() => navigate('/timeline')}
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 px-8 py-3 text-white"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Create Custom Path
-              </Button>
+            
+            {/* Fixed Desktop Button Layout */}
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="flex flex-wrap justify-center gap-4 mb-8">
+                <Button
+                  onClick={() => navigate('/timeline')}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-6 py-3 text-white flex-shrink-0"
+                >
+                  Experience Your Life Timeline
+                </Button>
+                <Button
+                  onClick={() => navigate('/create-path')}
+                  className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 px-6 py-3 text-white flex-shrink-0"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Custom Path
+                </Button>
+                <Button
+                  onClick={() => setShowComparison(true)}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-6 py-3 text-white flex-shrink-0"
+                >
+                  <GitCompare className="h-5 w-5 mr-2" />
+                  Compare Life Paths
+                </Button>
+                <Button
+                  onClick={() => navigate('/community')}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-6 py-3 text-white flex-shrink-0"
+                >
+                  <Users className="h-5 w-5 mr-2" />
+                  Connect with Community
+                </Button>
+              </div>
             </div>
+          </div>
+
+          {/* Common Life Simulations Section */}
+          <div className="mb-12">
+            <CommonLifeSimulations onSelectScenario={setSelectedScenario} />
           </div>
 
           {/* Desktop Content */}
           <div className="max-w-6xl mx-auto px-4 pb-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-white mb-2">Detailed Career Scenarios</h2>
+              <p className="text-gray-300">Deep dive into specific career paths</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {scenarios.map((scenario) => (
                 <Card 
