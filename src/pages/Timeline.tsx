@@ -206,7 +206,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               onClick={() => navigate('/simulation')}
-              className="text-white hover:bg-white/10 border-0"
+              className="text-white hover:bg-white/20 border border-white/30 bg-white/10"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Simulation
@@ -227,7 +227,7 @@ const Timeline = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCareerSelector(true)}
-                className="text-white border-blue-500/50 hover:bg-blue-500/20 hover:text-white bg-blue-500/10"
+                className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
               >
                 <Briefcase className="h-4 w-4 mr-2" />
                 Career
@@ -236,7 +236,7 @@ const Timeline = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPersonalization(!showPersonalization)}
-                className="text-white border-purple-500/50 hover:bg-purple-500/20 hover:text-white bg-purple-500/10"
+                className="text-white border-purple-400 hover:bg-purple-500/30 hover:text-white bg-purple-500/20"
               >
                 Personalize
               </Button>
@@ -307,32 +307,55 @@ const Timeline = () => {
         </div>
       </div>
 
-      {/* Main Timeline */}
-      <div className="relative flex-1">
+      {/* Visual Map-like Timeline */}
+      <div className="relative flex-1 bg-gradient-to-b from-green-100/10 to-blue-100/10 min-h-96">
+        {/* Sky and horizon background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-sky-400/20 via-sky-300/10 to-green-200/20"></div>
+        
+        {/* Grid lines for map feel */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }}></div>
+
         <div 
           ref={timelineRef}
-          className="overflow-x-auto overflow-y-hidden h-96 scrollbar-thin scrollbar-thumb-white/20"
+          className="overflow-x-auto overflow-y-hidden h-96 scrollbar-thin scrollbar-thumb-white/20 relative"
           style={{ 
             transform: `scale(${zoomLevel})`,
             transformOrigin: 'left center'
           }}
         >
-          <div className="flex items-center h-full px-8" style={{ width: `${timelineData.length * 200}px` }}>
-            {timelineData.map((yearData) => (
-              <YearNode
+          <div className="flex items-end h-full px-8 relative" style={{ width: `${timelineData.length * 200}px` }}>
+            {/* Road/Path */}
+            <div className="absolute bottom-8 left-0 right-0 h-4 bg-gray-600/50 rounded-full shadow-lg">
+              <div className="h-full bg-gradient-to-r from-yellow-400/30 via-orange-400/30 to-red-400/30 rounded-full"></div>
+              {/* Road markings */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/50 transform -translate-y-1/2"
+                   style={{
+                     backgroundImage: 'repeating-linear-gradient(to right, white 0, white 20px, transparent 20px, transparent 40px)',
+                   }}></div>
+            </div>
+
+            {timelineData.map((yearData, index) => (
+              <VisualYearNode
                 key={yearData.year}
                 yearData={yearData}
                 isSelected={selectedYear === yearData.year}
                 isBookmarked={bookmarkedYears.includes(yearData.year)}
                 onClick={() => handleYearClick(yearData.year)}
                 onBookmark={() => toggleBookmark(yearData.year)}
+                index={index}
               />
             ))}
           </div>
         </div>
 
         {/* Timeline Progress Bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+        <div className="absolute bottom-0 left-0 right-0 h-2 bg-white/10">
           <div 
             className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
             style={{ width: `${((currentYear - 2024) / 24) * 100}%` }}

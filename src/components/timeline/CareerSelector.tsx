@@ -1,353 +1,396 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Building, MapPin, DollarSign, TrendingUp, Users, X } from "lucide-react";
+import { X, Building, MapPin, DollarSign, Users, Heart, Star, Search, Plus } from "lucide-react";
 
-interface CareerPath {
+interface Career {
   id: string;
   title: string;
-  industry: string;
-  companies: Company[];
+  category: string;
   salaryRange: string;
-  growthPotential: string;
+  growthPotential: number;
   workLifeBalance: number;
   description: string;
 }
 
 interface Company {
+  id: string;
   name: string;
+  industry: string;
   size: string;
+  locations: string[];
   culture: string;
   benefits: string[];
-  locations: string[];
-  avgSalary: number;
-  workLifeRating: number;
+  avgSalary: string;
+  workLifeBalance: number;
+  logo: string;
 }
 
 interface CareerSelectorProps {
-  onSelectCareer: (career: CareerPath, company?: Company) => void;
+  onSelectCareer: (career: Career, company?: Company) => void;
   onClose: () => void;
 }
 
 const CareerSelector: React.FC<CareerSelectorProps> = ({ onSelectCareer, onClose }) => {
-  const [selectedCareer, setSelectedCareer] = useState<CareerPath | null>(null);
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customCareer, setCustomCareer] = useState({
+    title: '',
+    category: '',
+    salaryRange: '',
+    description: ''
+  });
 
-  const careerPaths: CareerPath[] = [
+  const careers: Career[] = [
     {
       id: 'software-engineer',
       title: 'Software Engineer',
-      industry: 'Technology',
-      salaryRange: '$80k - $180k',
-      growthPotential: 'High',
-      workLifeBalance: 70,
-      description: 'Build innovative software solutions and shape the digital future',
-      companies: [
-        {
-          name: 'Google',
-          size: 'Large (100k+ employees)',
-          culture: 'Innovation-focused, data-driven',
-          benefits: ['$200k+ salary', 'Free meals', 'Learning budget', '20% time'],
-          locations: ['Mountain View', 'NYC', 'Austin', 'Remote'],
-          avgSalary: 180000,
-          workLifeRating: 75
-        },
-        {
-          name: 'Netflix',
-          size: 'Large (11k employees)',
-          culture: 'Freedom & responsibility, high performance',
-          benefits: ['Unlimited PTO', 'Top market pay', 'Stock options'],
-          locations: ['Los Gatos', 'LA', 'Remote'],
-          avgSalary: 220000,
-          workLifeRating: 80
-        },
-        {
-          name: 'Stripe',
-          size: 'Medium (4k employees)',
-          culture: 'Fast-paced, mission-driven',
-          benefits: ['Equity', 'Health benefits', 'Learning stipend'],
-          locations: ['San Francisco', 'NYC', 'Remote'],
-          avgSalary: 200000,
-          workLifeRating: 78
-        }
-      ]
+      category: 'Technology',
+      salaryRange: '$70k - $200k',
+      growthPotential: 90,
+      workLifeBalance: 75,
+      description: 'Design, develop, and maintain software applications and systems.'
     },
     {
       id: 'product-manager',
       title: 'Product Manager',
-      industry: 'Technology',
-      salaryRange: '$90k - $200k',
-      growthPotential: 'High',
-      workLifeBalance: 65,
-      description: 'Drive product strategy and bring ideas to life',
-      companies: [
-        {
-          name: 'Apple',
-          size: 'Large (150k+ employees)',
-          culture: 'Design-focused, perfectionist',
-          benefits: ['Stock purchase plan', 'Health benefits', 'Product discounts'],
-          locations: ['Cupertino', 'Austin', 'NYC'],
-          avgSalary: 190000,
-          workLifeRating: 72
-        },
-        {
-          name: 'Airbnb',
-          size: 'Medium (6k employees)',
-          culture: 'Belong anywhere, inclusive',
-          benefits: ['Travel credits', 'Equity', 'Flexible work'],
-          locations: ['San Francisco', 'Remote'],
-          avgSalary: 185000,
-          workLifeRating: 82
-        }
-      ]
+      category: 'Technology',
+      salaryRange: '$90k - $250k',
+      growthPotential: 85,
+      workLifeBalance: 70,
+      description: 'Lead product development from conception to launch.'
     },
     {
       id: 'data-scientist',
       title: 'Data Scientist',
-      industry: 'Technology/Analytics',
-      salaryRange: '$85k - $170k',
-      growthPotential: 'Very High',
-      workLifeBalance: 75,
-      description: 'Extract insights from data to drive business decisions',
-      companies: [
-        {
-          name: 'Meta',
-          size: 'Large (70k+ employees)',
-          culture: 'Move fast, be bold',
-          benefits: ['$180k+ salary', 'RSUs', 'Wellness programs'],
-          locations: ['Menlo Park', 'NYC', 'Austin', 'Remote'],
-          avgSalary: 175000,
-          workLifeRating: 68
-        },
-        {
-          name: 'Spotify',
-          size: 'Medium (8k employees)',
-          culture: 'Creative, music-loving',
-          benefits: ['Spotify Premium', 'Flexible hours', 'Parental leave'],
-          locations: ['NYC', 'Boston', 'Remote'],
-          avgSalary: 155000,
-          workLifeRating: 85
-        }
-      ]
+      category: 'Technology',
+      salaryRange: '$80k - $220k',
+      growthPotential: 88,
+      workLifeBalance: 80,
+      description: 'Analyze complex data to help companies make better decisions.'
     },
     {
       id: 'marketing-manager',
       title: 'Marketing Manager',
-      industry: 'Marketing/Creative',
-      salaryRange: '$60k - $130k',
-      growthPotential: 'Medium',
-      workLifeBalance: 72,
-      description: 'Create compelling campaigns and build brand awareness',
-      companies: [
-        {
-          name: 'Nike',
-          size: 'Large (75k+ employees)',
-          culture: 'Athletic, competitive, inspiring',
-          benefits: ['Product discounts', 'Fitness facilities', 'Performance bonuses'],
-          locations: ['Portland', 'NYC', 'Chicago'],
-          avgSalary: 95000,
-          workLifeRating: 78
-        },
-        {
-          name: 'HubSpot',
-          size: 'Medium (7k employees)',
-          culture: 'Inbound, helpful, transparent',
-          benefits: ['Unlimited PTO', 'Learning budget', 'Flexible work'],
-          locations: ['Boston', 'Remote'],
-          avgSalary: 85000,
-          workLifeRating: 88
-        }
-      ]
+      category: 'Business',
+      salaryRange: '$60k - $180k',
+      growthPotential: 80,
+      workLifeBalance: 85,
+      description: 'Develop and execute marketing strategies to promote products.'
     },
     {
       id: 'financial-analyst',
       title: 'Financial Analyst',
-      industry: 'Finance',
-      salaryRange: '$65k - $150k',
-      growthPotential: 'High',
-      workLifeBalance: 60,
-      description: 'Analyze financial data and drive investment decisions',
-      companies: [
-        {
-          name: 'Goldman Sachs',
-          size: 'Large (45k+ employees)',
-          culture: 'High-performance, competitive',
-          benefits: ['High compensation', 'Prestige', 'Global opportunities'],
-          locations: ['NYC', 'London', 'Hong Kong'],
-          avgSalary: 140000,
-          workLifeRating: 55
-        },
-        {
-          name: 'Robinhood',
-          size: 'Medium (3k employees)',
-          culture: 'Democratizing finance, innovative',
-          benefits: ['Equity', 'Free trading', 'Flexible benefits'],
-          locations: ['Menlo Park', 'NYC', 'Remote'],
-          avgSalary: 120000,
-          workLifeRating: 75
-        }
-      ]
+      category: 'Finance',
+      salaryRange: '$55k - $150k',
+      growthPotential: 75,
+      workLifeBalance: 70,
+      description: 'Analyze financial data to guide investment decisions.'
+    },
+    {
+      id: 'ux-designer',
+      title: 'UX Designer',
+      category: 'Design',
+      salaryRange: '$65k - $160k',
+      growthPotential: 82,
+      workLifeBalance: 85,
+      description: 'Design user-friendly interfaces and experiences.'
     }
   ];
 
-  const handleConfirmSelection = () => {
-    if (selectedCareer) {
-      onSelectCareer(selectedCareer, selectedCompany || undefined);
+  const companies: Company[] = [
+    {
+      id: 'google',
+      name: 'Google',
+      industry: 'Technology',
+      size: 'Large (100k+ employees)',
+      locations: ['Mountain View, CA', 'Seattle, WA', 'New York, NY', 'Bangalore, India'],
+      culture: 'Innovation-focused, collaborative, data-driven',
+      benefits: ['Health insurance', 'Stock options', 'Free meals', '20% time'],
+      avgSalary: '$150k - $400k',
+      workLifeBalance: 75,
+      logo: '🔍'
+    },
+    {
+      id: 'microsoft',
+      name: 'Microsoft',
+      industry: 'Technology',
+      size: 'Large (200k+ employees)',
+      locations: ['Redmond, WA', 'San Francisco, CA', 'Austin, TX', 'Hyderabad, India'],
+      culture: 'Inclusive, growth mindset, customer-focused',
+      benefits: ['Healthcare', 'Stock purchase plan', 'Learning budget', 'Flexible work'],
+      avgSalary: '$140k - $350k',
+      workLifeBalance: 80,
+      logo: '🪟'
+    },
+    {
+      id: 'netflix',
+      name: 'Netflix',
+      industry: 'Entertainment/Technology',
+      size: 'Medium (12k employees)',
+      locations: ['Los Gatos, CA', 'Los Angeles, CA', 'Amsterdam, NL', 'Mumbai, India'],
+      culture: 'Freedom & responsibility, high performance, creative',
+      benefits: ['Unlimited PTO', 'Stock options', 'Top-tier compensation', 'Creative freedom'],
+      avgSalary: '$160k - $500k',
+      workLifeBalance: 70,
+      logo: '📺'
+    },
+    {
+      id: 'startup',
+      name: 'Tech Startup',
+      industry: 'Technology',
+      size: 'Small (10-100 employees)',
+      locations: ['San Francisco, CA', 'Austin, TX', 'Berlin, Germany', 'Bangalore, India'],
+      culture: 'Fast-paced, entrepreneurial, equity-focused',
+      benefits: ['Equity', 'Flexible hours', 'Learning opportunities', 'Rapid growth'],
+      avgSalary: '$70k - $180k + equity',
+      workLifeBalance: 60,
+      logo: '🚀'
+    }
+  ];
+
+  const categories = ['all', 'Technology', 'Business', 'Finance', 'Design', 'Healthcare'];
+
+  const filteredCareers = careers.filter(career => {
+    const matchesCategory = selectedCategory === 'all' || career.category === selectedCategory;
+    const matchesSearch = career.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         career.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const handleCreateCustomPath = () => {
+    if (customCareer.title && customCareer.category) {
+      const newCareer: Career = {
+        id: `custom-${Date.now()}`,
+        title: customCareer.title,
+        category: customCareer.category,
+        salaryRange: customCareer.salaryRange || '$50k - $150k',
+        growthPotential: 75,
+        workLifeBalance: 80,
+        description: customCareer.description || `Custom career path in ${customCareer.title}`
+      };
+      onSelectCareer(newCareer);
+      onClose();
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <Card className="bg-gray-900/95 border-purple-500/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-xl text-white flex items-center">
-            <Building className="h-5 w-5 mr-2 text-blue-400" />
-            Choose Your Career Path
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-400 hover:text-white">
-            <X className="h-4 w-4" />
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-black/90 border-white/20 text-white">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl text-white">Choose Your Career Path</CardTitle>
+            <Button variant="ghost" onClick={onClose} className="text-white hover:bg-white/10">
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          {/* Search and Category Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search careers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+              />
+            </div>
+            
+            <div className="flex gap-2 flex-wrap">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={`${
+                    selectedCategory === category 
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                      : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                  }`}
+                >
+                  {category === 'all' ? 'All' : category}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Create Custom Path Button */}
+          <Button
+            onClick={() => setShowCustomForm(!showCustomForm)}
+            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Custom Path
           </Button>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent>
+          {/* Custom Career Form */}
+          {showCustomForm && (
+            <Card className="mb-6 bg-purple-900/30 border-purple-400">
+              <CardContent className="p-4">
+                <h3 className="text-lg font-semibold text-white mb-4">Create Your Custom Career Path</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Career Title (e.g., AI Researcher)"
+                    value={customCareer.title}
+                    onChange={(e) => setCustomCareer(prev => ({ ...prev, title: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  />
+                  <Input
+                    placeholder="Category (e.g., Technology)"
+                    value={customCareer.category}
+                    onChange={(e) => setCustomCareer(prev => ({ ...prev, category: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  />
+                  <Input
+                    placeholder="Salary Range (e.g., $80k - $200k)"
+                    value={customCareer.salaryRange}
+                    onChange={(e) => setCustomCareer(prev => ({ ...prev, salaryRange: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  />
+                  <Input
+                    placeholder="Description"
+                    value={customCareer.description}
+                    onChange={(e) => setCustomCareer(prev => ({ ...prev, description: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  />
+                </div>
+                <Button
+                  onClick={handleCreateCustomPath}
+                  disabled={!customCareer.title || !customCareer.category}
+                  className="mt-4 bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
+                >
+                  Create Career Path
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Career Selection */}
           {!selectedCareer ? (
-            // Career Selection
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {careerPaths.map((career) => (
-                <div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredCareers.map((career) => (
+                <Card
                   key={career.id}
-                  className="cursor-pointer p-4 rounded-lg border-2 border-gray-600 hover:border-purple-500 bg-gray-800/50 transition-all"
+                  className="cursor-pointer transition-all hover:scale-105 bg-white/5 border-white/20 hover:border-blue-400"
                   onClick={() => setSelectedCareer(career)}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-white">{career.title}</h3>
-                    <Badge variant="outline" className="text-blue-300 border-blue-500">
-                      {career.industry}
-                    </Badge>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-3">{career.description}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm">
-                      <DollarSign className="h-4 w-4 text-green-400 mr-2" />
-                      <span className="text-gray-300">{career.salaryRange}</span>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-white">{career.title}</h3>
+                      <Badge variant="secondary" className="bg-blue-600 text-white">
+                        {career.category}
+                      </Badge>
                     </div>
-                    <div className="flex items-center text-sm">
-                      <TrendingUp className="h-4 w-4 text-purple-400 mr-2" />
-                      <span className="text-gray-300">Growth: {career.growthPotential}</span>
+                    <p className="text-gray-300 text-sm mb-3">{career.description}</p>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center text-sm">
+                        <DollarSign className="h-4 w-4 text-green-400 mr-2" />
+                        <span className="text-green-300">{career.salaryRange}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center">
+                          <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                          <span className="text-gray-300">Growth: {career.growthPotential}%</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Heart className="h-4 w-4 text-pink-400 mr-1" />
+                          <span className="text-gray-300">Balance: {career.workLifeBalance}%</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm">
-                      <Users className="h-4 w-4 text-pink-400 mr-2" />
-                      <span className="text-gray-300">Work-Life: {career.workLifeBalance}%</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3">
-                    <p className="text-xs text-gray-400">
-                      {career.companies.length} companies available
-                    </p>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           ) : (
             // Company Selection
             <div>
               <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl text-white">{selectedCareer.title}</h2>
-                  <p className="text-gray-400">Choose a company to work for:</p>
-                </div>
-                <Button 
-                  variant="outline" 
+                <h2 className="text-xl font-semibold text-white">
+                  Choose a Company for {selectedCareer.title}
+                </h2>
+                <Button
+                  variant="outline"
                   onClick={() => setSelectedCareer(null)}
-                  className="border-gray-500 text-gray-300 hover:bg-white/10"
+                  className="text-white border-white/20 hover:bg-white/10"
                 >
                   Back to Careers
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 mb-6">
-                {selectedCareer.companies.map((company) => (
-                  <div
-                    key={company.name}
-                    className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
-                      selectedCompany?.name === company.name
-                        ? 'border-purple-500 bg-purple-500/20'
-                        : 'border-gray-600 hover:border-gray-500 bg-gray-800/50'
-                    }`}
-                    onClick={() => setSelectedCompany(company)}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {companies.map((company) => (
+                  <Card
+                    key={company.id}
+                    className="cursor-pointer transition-all hover:scale-105 bg-white/5 border-white/20 hover:border-green-400"
+                    onClick={() => onSelectCareer(selectedCareer, company)}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{company.name}</h3>
-                        <p className="text-gray-400 text-sm">{company.size}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-green-400 font-semibold">
-                          ${company.avgSalary.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-gray-400">Average Salary</p>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-300 text-sm mb-3">{company.culture}</p>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="text-sm font-semibold text-blue-300 mb-2">Benefits</h4>
-                        <div className="flex flex-wrap gap-1">
-                          {company.benefits.slice(0, 3).map((benefit) => (
-                            <Badge key={benefit} variant="secondary" className="text-xs bg-gray-700 text-gray-200">
-                              {benefit}
-                            </Badge>
-                          ))}
+                    <CardContent className="p-6">
+                      <div className="flex items-center mb-4">
+                        <span className="text-3xl mr-3">{company.logo}</span>
+                        <div>
+                          <h3 className="font-semibold text-xl text-white">{company.name}</h3>
+                          <p className="text-gray-300 text-sm">{company.industry}</p>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-green-300 mb-2">Locations</h4>
-                        <div className="flex flex-wrap gap-1">
-                          {company.locations.slice(0, 3).map((location) => (
-                            <Badge key={location} variant="outline" className="text-xs border-gray-500 text-gray-300">
-                              {location}
-                            </Badge>
-                          ))}
+
+                      <div className="space-y-3">
+                        <div className="flex items-center text-sm">
+                          <Users className="h-4 w-4 text-blue-400 mr-2" />
+                          <span className="text-gray-300">{company.size}</span>
+                        </div>
+
+                        <div className="flex items-center text-sm">
+                          <DollarSign className="h-4 w-4 text-green-400 mr-2" />
+                          <span className="text-green-300">{company.avgSalary}</span>
+                        </div>
+
+                        <div className="flex items-center text-sm">
+                          <Heart className="h-4 w-4 text-pink-400 mr-2" />
+                          <span className="text-gray-300">Work-Life Balance: {company.workLifeBalance}%</span>
+                        </div>
+
+                        <div className="text-sm">
+                          <div className="flex items-start">
+                            <MapPin className="h-4 w-4 text-orange-400 mr-2 mt-0.5" />
+                            <div>
+                              <span className="text-gray-300">Locations:</span>
+                              <div className="text-orange-300 text-xs mt-1">
+                                {company.locations.slice(0, 2).join(', ')}
+                                {company.locations.length > 2 && ` +${company.locations.length - 2} more`}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-white/20">
+                          <p className="text-gray-400 text-xs italic">{company.culture}</p>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="mt-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">Work-Life Balance</span>
-                        <span className="text-white">{company.workLifeRating}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
-                        <div 
-                          className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full"
-                          style={{ width: `${company.workLifeRating}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
 
-              <div className="flex space-x-3">
+              {/* Option to proceed without company */}
+              <div className="mt-6 text-center">
                 <Button
                   variant="outline"
                   onClick={() => onSelectCareer(selectedCareer)}
-                  className="flex-1 border-gray-500 text-gray-300 hover:bg-white/10"
+                  className="text-white border-white/20 hover:bg-white/10"
                 >
-                  Continue without Company
-                </Button>
-                <Button
-                  onClick={handleConfirmSelection}
-                  disabled={!selectedCompany}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
-                >
-                  Start Journey at {selectedCompany?.name || 'Company'}
+                  Continue without specific company
                 </Button>
               </div>
             </div>
