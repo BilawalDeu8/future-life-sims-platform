@@ -6,9 +6,29 @@ import { ArrowLeft, Plus, Sparkles } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import CustomCareerForm from "@/components/timeline/CustomCareerForm";
 
+interface Career {
+  id: string;
+  title: string;
+  category: string;
+  salaryRange: string;
+  growthPotential: number;
+  workLifeBalance: number;
+  description: string;
+}
+
 const CreatePath = () => {
   const navigate = useNavigate();
   const [showCustomForm, setShowCustomForm] = useState(false);
+
+  const handleCareerCreated = (career: Career) => {
+    console.log('Career created:', career);
+    // Navigate to timeline with the created career
+    navigate('/timeline', { state: { customCareer: career } });
+  };
+
+  const handleCancel = () => {
+    setShowCustomForm(false);
+  };
 
   if (showCustomForm) {
     return (
@@ -25,7 +45,12 @@ const CreatePath = () => {
             </Button>
           </div>
         </div>
-        <CustomCareerForm onBack={() => setShowCustomForm(false)} />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <CustomCareerForm 
+            onCareerCreated={handleCareerCreated}
+            onCancel={handleCancel}
+          />
+        </div>
       </div>
     );
   }

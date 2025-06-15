@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,10 +20,11 @@ interface Career {
 }
 
 interface CustomCareerFormProps {
-  onBack: () => void;
+  onCareerCreated: (career: Career) => void;
+  onCancel: () => void;
 }
 
-const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onBack }) => {
+const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onCareerCreated, onCancel }) => {
   const [formData, setFormData] = useState({
     jobTitle: '',
     company: '',
@@ -92,7 +94,12 @@ const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onBack }) => {
     }
 
     setShowDataPreview(true);
-    await fetchScenarioData(formData.jobTitle, formData.location);
+    // Open real world data in a new tab instead of showing inline
+    const params = new URLSearchParams({
+      occupation: formData.jobTitle,
+      location: formData.location
+    });
+    window.open(`/real-world-data?${params.toString()}`, '_blank');
   };
 
   const handleCreateCareer = async () => {
@@ -258,46 +265,6 @@ const CustomCareerForm: React.FC<CustomCareerFormProps> = ({ onBack }) => {
           <div className="mb-4 p-3 bg-red-900/20 border border-red-600 rounded-lg flex items-center">
             <AlertCircle className="h-4 w-4 text-red-400 mr-2" />
             <span className="text-red-300 text-sm">{error}</span>
-          </div>
-        )}
-
-        {/* Real World Data Preview */}
-        {showDataPreview && (salaryData || costOfLivingData || jobMarketData) && (
-          <div className="mt-6">
-            <h4 className="text-md font-semibold text-white mb-4">Real-World Data Preview</h4>
-            <RealWorldDataDisplay
-              salaryData={salaryData}
-              costOfLivingData={costOfLivingData}
-              jobMarketData={jobMarketData}
-              isLoading={isLoading}
-            />
-
-            {/* Affordability Summary */}
-            {affordabilityMetrics && (
-              <div className="mt-4 p-4 bg-gray-800/50 rounded-lg">
-                <h5 className="text-sm font-semibold text-white mb-2">Affordability Summary</h5>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-300">Monthly Take-Home:</span>
-                    <div className="text-green-300 font-semibold">
-                      ₹{affordabilityMetrics.monthlyNet.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-300">Housing Budget:</span>
-                    <div className="text-blue-300 font-semibold">
-                      ₹{affordabilityMetrics.recommendedHousingBudget.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-300">Years to Buy Home:</span>
-                    <div className={`font-semibold ${affordabilityMetrics.yearsToAffordHome > 10 ? 'text-red-300' : 'text-yellow-300'}`}>
-                      {affordabilityMetrics.yearsToAffordHome} years
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </CardContent>
