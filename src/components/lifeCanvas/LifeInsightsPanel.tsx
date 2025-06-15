@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, TrendingUp, Target, AlertCircle, Lightbulb, Refresh } from 'lucide-react';
+import { X, TrendingUp, Target, AlertCircle, Lightbulb, RefreshCw } from 'lucide-react';
 import { LifeInsight } from '@/types/lifeCanvas';
 import { motion } from 'framer-motion';
 
@@ -63,7 +62,7 @@ const LifeInsightsPanel: React.FC<LifeInsightsPanelProps> = ({
               size="sm"
               className="border-white/30 text-white hover:bg-white/10"
             >
-              <Refresh className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4" />
             </Button>
             <Button
               onClick={onClose}

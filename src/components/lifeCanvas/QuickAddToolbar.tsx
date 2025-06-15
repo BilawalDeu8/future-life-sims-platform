@@ -6,6 +6,14 @@ import { X, Mic, Camera, MapPin } from 'lucide-react';
 import { LifeEvent, EventCategory } from '@/types/lifeCanvas';
 import { motion } from 'framer-motion';
 
+// TypeScript declarations for Speech Recognition API
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+    SpeechRecognition: any;
+  }
+}
+
 interface QuickAddToolbarProps {
   onEventCreate: (event: Partial<LifeEvent>) => void;
   onClose: () => void;
@@ -69,7 +77,7 @@ const QuickAddToolbar: React.FC<QuickAddToolbarProps> = ({
 
     setIsRecording(true);
     
-    recognition.onresult = (event) => {
+    recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setTitle(transcript);
       setIsRecording(false);
