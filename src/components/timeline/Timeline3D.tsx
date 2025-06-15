@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane, Heart, Trophy, Gamepad2 } from "lucide-react";
 import Interactive3DWorld from './Interactive3DWorld';
 import LifeDecisionModal from './LifeDecisionModal';
+import RelationshipSystem from './RelationshipSystem';
 
 interface LifeStage {
   age: number;
@@ -247,7 +248,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           },
           {
             id: 3,
-1            text: "Decline and focus on stability",
+            text: "Decline and focus on stability",
             impact: "Keep your secure job and avoid the risk",
             consequences: { career: 5, finances: 10, relationships: 10, happiness: -5 }
           }
@@ -302,6 +303,11 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
     setSelectedBuilding(building);
   };
 
+  const handleRelationshipAction = (action: string, relationshipId: string) => {
+    console.log(`Relationship action: ${action} for ${relationshipId}`);
+    // Here you could implement relationship interaction logic
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
       {/* Header */}
@@ -346,67 +352,81 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
         </div>
       </div>
 
-      {/* 3D Interactive World */}
-      <div className="relative h-[70vh] bg-gradient-to-b from-blue-900/30 to-purple-900/30">
-        <Suspense fallback={
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
-              <p>Loading your 3D world...</p>
-            </div>
-          </div>
-        }>
-          <Interactive3DWorld
-            currentAge={currentAge}
-            lifeStage={currentStage}
-            onBuildingClick={handleBuildingClick}
-            userLocation={userLocation}
-          />
-        </Suspense>
+      <div className="flex flex-col lg:flex-row">
+        {/* 3D Interactive World */}
+        <div className="flex-1">
+          <div className="relative h-[70vh] bg-gradient-to-b from-blue-900/30 to-purple-900/30">
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
+                  <p>Loading your 3D world...</p>
+                </div>
+              </div>
+            }>
+              <Interactive3DWorld
+                currentAge={currentAge}
+                lifeStage={currentStage}
+                onBuildingClick={handleBuildingClick}
+                userLocation={userLocation}
+              />
+            </Suspense>
 
-        {/* View Mode Indicator */}
-        <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
-          <div className="flex items-center space-x-2">
-            <MapPin className="h-4 w-4 text-green-400" />
-            <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
+            {/* View Mode Indicator */}
+            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-green-400" />
+                <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
+              </div>
+            </div>
+
+            {/* Decision Trigger Button */}
+            {[25, 30, 35].includes(currentAge) && (
+              <div className="absolute top-4 right-4">
+                <Button
+                  onClick={() => handleDecisionClick(currentAge)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white animate-bounce"
+                >
+                  Big Decision Available!
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Timeline Scrubber */}
+          <div className="px-8 py-6 bg-black/20">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Life Timeline (Age {currentAge} • {currentStage.year})
+              </label>
+              <Slider
+                value={[currentAge]}
+                onValueChange={([value]) => setCurrentAge(value)}
+                min={22}
+                max={50}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-2">
+                {lifeStages.map(stage => (
+                  <div key={stage.age} className="text-center">
+                    <div>{stage.age}</div>
+                    <div className="text-[10px] text-green-300">{stage.location}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Decision Trigger Button */}
-        {[25, 30, 35].includes(currentAge) && (
-          <div className="absolute top-4 right-4">
-            <Button
-              onClick={() => handleDecisionClick(currentAge)}
-              className="bg-purple-600 hover:bg-purple-700 text-white animate-bounce"
-            >
-              Big Decision Available!
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Timeline Scrubber */}
-      <div className="px-8 py-6 bg-black/20">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            Life Timeline (Age {currentAge} • {currentStage.year})
-          </label>
-          <Slider
-            value={[currentAge]}
-            onValueChange={([value]) => setCurrentAge(value)}
-            min={22}
-            max={50}
-            step={1}
-            className="w-full"
+        {/* Relationship Panel */}
+        <div className="lg:w-1/3 p-4 bg-black/10 border-l border-white/10 overflow-y-auto max-h-screen">
+          <RelationshipSystem
+            currentAge={currentAge}
+            careerPath={careerPath}
+            userLocation={userLocation}
+            onRelationshipAction={handleRelationshipAction}
           />
-          <div className="flex justify-between text-xs text-gray-400 mt-2">
-            {lifeStages.map(stage => (
-              <div key={stage.age} className="text-center">
-                <div>{stage.age}</div>
-                <div className="text-[10px] text-green-300">{stage.location}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -453,7 +473,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
       )}
 
       {/* Enhanced Details Panel */}
-      <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-60 overflow-y-auto">
+      <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-60 overflow-y-auto lg:right-1/3">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             <div>
