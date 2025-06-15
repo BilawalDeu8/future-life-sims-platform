@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Play, Pause, Home, Briefcase, Heart, DollarSign, MapPin, Trophy, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Play, Pause, Home, Briefcase, Heart, DollarSign, MapPin, Trophy, AlertCircle, TrendingUp, Calendar, Users, Zap, Target, Coffee, BookOpen, Plane } from "lucide-react";
 import LifeDecisionModal from './LifeDecisionModal';
 
 interface TimelineProps {
@@ -25,6 +26,24 @@ interface LifeStage {
   challenges: string[];
   hasDecision: boolean;
   milestone?: string;
+  lifestyle: {
+    happiness: number;
+    stress: number;
+    workLifeBalance: number;
+    socialLife: string;
+    hobbies: string[];
+    healthStatus: string;
+  };
+  majorEvents: string[];
+  monthlyExpenses: {
+    rent: number;
+    food: number;
+    entertainment: number;
+    transport: number;
+    savings: number;
+  };
+  futureGoals: string[];
+  personalGrowth: string;
 }
 
 const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
@@ -46,21 +65,89 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
   const userLocation = getUserLocation();
   const isIndianLocation = userLocation.toLowerCase().includes('india');
 
-  // Generate life stages
+  // Generate comprehensive life stages
   const generateLifeStages = (): LifeStage[] => {
     const stages: LifeStage[] = [];
     const ages = [22, 25, 28, 32, 35, 40, 45, 50];
     
-    const baseIncome = isIndianLocation ? 1200000 : 80000; // ₹12L or $80k
+    const baseIncome = isIndianLocation ? 1200000 : 80000;
     const currency = isIndianLocation ? '₹' : '$';
     const cities = isIndianLocation 
       ? ['Bangalore', 'Mumbai', 'Pune', 'Hyderabad', 'Delhi NCR'] 
       : ['San Francisco', 'New York', 'Austin', 'Seattle', 'Boston'];
     
+    const lifestyleData = [
+      {
+        socialLife: 'Active nightlife, weekend parties',
+        hobbies: ['Gaming', 'Coding side projects', 'Gym'],
+        healthStatus: 'High energy, occasional stress',
+        personalGrowth: 'Learning fundamentals, building confidence',
+        majorEvents: ['First job', 'Moving to new city', 'College graduation'],
+        futureGoals: ['Get promoted', 'Learn new technologies', 'Build emergency fund']
+      },
+      {
+        socialLife: 'Dating, close friend groups',
+        hobbies: ['Travel', 'Photography', 'Cooking'],
+        healthStatus: 'Good, managing work stress',
+        personalGrowth: 'Developing leadership skills, finding passion',
+        majorEvents: ['First promotion', 'Serious relationship', 'First international trip'],
+        futureGoals: ['Senior role', 'Buy a car', 'Consider marriage']
+      },
+      {
+        socialLife: 'Settling down, fewer but deeper friendships',
+        hobbies: ['Home improvement', 'Reading', 'Weekend getaways'],
+        healthStatus: 'Stable, focus on mental health',
+        personalGrowth: 'Mastering expertise, mentoring others',
+        majorEvents: ['Marriage/Partnership', 'Buying first home', 'Career breakthrough'],
+        futureGoals: ['Start family', 'Buy house', 'Leadership position']
+      },
+      {
+        socialLife: 'Family-focused, professional networks',
+        hobbies: ['Family activities', 'Gardening', 'Sports'],
+        healthStatus: 'Managing responsibilities, regular checkups',
+        personalGrowth: 'Balancing career and family, strategic thinking',
+        majorEvents: ['First child', 'Home purchase', 'Major promotion'],
+        futureGoals: ['Kids education fund', 'Expand family', 'Senior management']
+      },
+      {
+        socialLife: 'School communities, family gatherings',
+        hobbies: ['Kids sports', 'Community involvement', 'Fitness'],
+        healthStatus: 'Health-conscious, preventive care',
+        personalGrowth: 'Peak career phase, giving back to community',
+        majorEvents: ['Second child', 'Career peak', 'Investment milestones'],
+        futureGoals: ['Financial independence', 'Kids future', 'Legacy building']
+      },
+      {
+        socialLife: 'Professional leadership, mentor role',
+        hobbies: ['Mentoring', 'Investing', 'Travel planning'],
+        healthStatus: 'Proactive health management',
+        personalGrowth: 'Industry expert, strategic vision',
+        majorEvents: ['Executive role', 'Major investments', 'Industry recognition'],
+        futureGoals: ['Wealth building', 'Succession planning', 'Impact creation']
+      },
+      {
+        socialLife: 'Industry veteran, advisory roles',
+        hobbies: ['Consulting', 'Golf/leisure', 'Grandparent prep'],
+        healthStatus: 'Age-aware health focus',
+        personalGrowth: 'Wisdom sharing, legacy focus',
+        majorEvents: ['C-suite role', 'Board positions', 'Wealth milestones'],
+        futureGoals: ['Retirement planning', 'Legacy projects', 'Next generation']
+      },
+      {
+        socialLife: 'Grandparent role, wisdom sharing',
+        hobbies: ['Advisory work', 'Philanthropy', 'Slow travel'],
+        healthStatus: 'Wellness-focused lifestyle',
+        personalGrowth: 'Life reflection, knowledge transfer',
+        majorEvents: ['Retirement transition', 'Grandchildren', 'Legacy establishment'],
+        futureGoals: ['Peaceful retirement', 'Health maintenance', 'Family legacy']
+      }
+    ];
+    
     ages.forEach((age, index) => {
       const yearOffset = age - 22;
       const progressFactor = index / (ages.length - 1);
       const currentIncome = baseIncome + (yearOffset * (isIndianLocation ? 200000 : 12000));
+      const data = lifestyleData[index];
       
       stages.push({
         age,
@@ -82,7 +169,25 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         achievements: progressFactor > 0.3 ? ['First promotion'] : [],
         challenges: progressFactor < 0.3 ? ['Learning curve'] : [],
         hasDecision: [25, 30, 35].includes(age),
-        milestone: progressFactor === 0.5 ? 'First major promotion' : undefined
+        milestone: progressFactor === 0.5 ? 'First major promotion' : undefined,
+        lifestyle: {
+          happiness: Math.floor(60 + progressFactor * 30),
+          stress: Math.floor(30 + progressFactor * 40),
+          workLifeBalance: Math.floor(50 + progressFactor * 30),
+          socialLife: data.socialLife,
+          hobbies: data.hobbies,
+          healthStatus: data.healthStatus
+        },
+        majorEvents: data.majorEvents,
+        monthlyExpenses: {
+          rent: Math.floor(currentIncome * 0.25 / 12),
+          food: Math.floor(currentIncome * 0.08 / 12),
+          entertainment: Math.floor(currentIncome * 0.05 / 12),
+          transport: Math.floor(currentIncome * 0.06 / 12),
+          savings: Math.floor(currentIncome * 0.15 / 12)
+        },
+        futureGoals: data.futureGoals,
+        personalGrowth: data.personalGrowth
       });
     });
     
@@ -177,11 +282,11 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       {/* Enhanced Current Stage Highlight */}
       <Card className="mb-8 bg-gradient-to-r from-blue-600/40 to-purple-600/40 border-blue-400/60 backdrop-blur-sm shadow-2xl">
         <CardContent className="p-8">
-          {/* Age and Year Header */}
+          {/* Age and Year Header with Better Contrast */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-white/20 to-white/10 rounded-2xl p-4 border border-white/30">
-                <h2 className="text-4xl font-bold text-white">Age {currentStage.age}</h2>
+              <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl p-4 border border-white/30 shadow-lg">
+                <h2 className="text-4xl font-bold text-white drop-shadow-lg">Age {currentStage.age}</h2>
                 <p className="text-blue-200 text-sm font-medium">{currentStage.year}</p>
               </div>
               <div>
@@ -196,7 +301,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
           </div>
           
           {/* Life Details Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
             <div className="flex items-center space-x-3 bg-blue-500/20 rounded-lg p-3 border border-blue-400/30">
               <Briefcase className="h-6 w-6 text-blue-300 flex-shrink-0" />
               <div>
@@ -226,6 +331,48 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
               <div>
                 <p className="text-xs text-green-200 font-medium">Location</p>
                 <p className="text-white font-semibold text-sm">{currentStage.location}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Lifestyle Metrics */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="bg-yellow-500/20 rounded-lg p-3 border border-yellow-400/30">
+              <div className="flex items-center justify-between">
+                <span className="text-yellow-200 text-xs font-medium">Happiness</span>
+                <span className="text-yellow-300 font-bold">{currentStage.lifestyle.happiness}%</span>
+              </div>
+              <div className="w-full bg-yellow-900/30 rounded-full h-2 mt-2">
+                <div 
+                  className="bg-yellow-400 h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${currentStage.lifestyle.happiness}%` }}
+                ></div>
+              </div>
+            </div>
+            
+            <div className="bg-red-500/20 rounded-lg p-3 border border-red-400/30">
+              <div className="flex items-center justify-between">
+                <span className="text-red-200 text-xs font-medium">Stress</span>
+                <span className="text-red-300 font-bold">{currentStage.lifestyle.stress}%</span>
+              </div>
+              <div className="w-full bg-red-900/30 rounded-full h-2 mt-2">
+                <div 
+                  className="bg-red-400 h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${currentStage.lifestyle.stress}%` }}
+                ></div>
+              </div>
+            </div>
+            
+            <div className="bg-purple-500/20 rounded-lg p-3 border border-purple-400/30">
+              <div className="flex items-center justify-between">
+                <span className="text-purple-200 text-xs font-medium">Work-Life Balance</span>
+                <span className="text-purple-300 font-bold">{currentStage.lifestyle.workLifeBalance}%</span>
+              </div>
+              <div className="w-full bg-purple-900/30 rounded-full h-2 mt-2">
+                <div 
+                  className="bg-purple-400 h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${currentStage.lifestyle.workLifeBalance}%` }}
+                ></div>
               </div>
             </div>
           </div>
@@ -285,19 +432,18 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
                     <div className="text-sm font-bold text-white">{stage.age}</div>
                   </div>
                   
-                  {/* Clean Year and Career Labels */}
-                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center w-24">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 border border-white/20">
-                      <div className="text-sm font-bold text-white">{stage.year}</div>
-                      <div className="text-xs text-gray-300 truncate">{stage.career.split(' ')[0]}</div>
+                  {/* Cleaner Year and Career Labels with Dark Background */}
+                  <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center w-32">
+                    <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600/50 shadow-lg">
+                      <div className="text-sm font-bold text-white mb-1">{stage.year}</div>
+                      <div className="text-xs text-gray-300 leading-tight">{stage.career}</div>
+                      <div className="text-xs text-blue-300 mt-1">{stage.location}</div>
                     </div>
                   </div>
                   
                   {/* Progress Bars */}
                   <div className="absolute top-24 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                    {/* Career Progress */}
                     <div className="w-2 bg-blue-500 rounded opacity-70" style={{ height: `${20 + index * 8}px` }}></div>
-                    {/* Financial Progress */}
                     <div className="w-2 bg-green-500 rounded opacity-70" style={{ height: `${10 + index * 6}px` }}></div>
                   </div>
                 </div>
@@ -325,7 +471,130 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         />
       </div>
 
-      {/* Financial Summary */}
+      {/* Comprehensive Life Details */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Financial Breakdown */}
+        <Card className="bg-green-600/20 border-green-400/40 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-green-300 flex items-center">
+              <DollarSign className="h-5 w-5 mr-2" />
+              Financial Overview
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-green-200 text-sm">Monthly Rent</p>
+                <p className="text-white font-bold">{formatCurrency(currentStage.monthlyExpenses.rent * 12)}</p>
+              </div>
+              <div>
+                <p className="text-green-200 text-sm">Food & Dining</p>
+                <p className="text-white font-bold">{formatCurrency(currentStage.monthlyExpenses.food * 12)}</p>
+              </div>
+              <div>
+                <p className="text-green-200 text-sm">Entertainment</p>
+                <p className="text-white font-bold">{formatCurrency(currentStage.monthlyExpenses.entertainment * 12)}</p>
+              </div>
+              <div>
+                <p className="text-green-200 text-sm">Monthly Savings</p>
+                <p className="text-white font-bold">{formatCurrency(currentStage.monthlyExpenses.savings * 12)}</p>
+              </div>
+            </div>
+            <div className="bg-green-500/20 rounded-lg p-3">
+              <p className="text-green-200 text-sm">Total Savings</p>
+              <p className="text-2xl font-bold text-green-300">{formatCurrency(currentStage.savings)}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Lifestyle & Social Life */}
+        <Card className="bg-purple-600/20 border-purple-400/40 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-purple-300 flex items-center">
+              <Users className="h-5 w-5 mr-2" />
+              Lifestyle & Social
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-purple-200 text-sm mb-2">Social Life</p>
+              <p className="text-white text-sm">{currentStage.lifestyle.socialLife}</p>
+            </div>
+            <div>
+              <p className="text-purple-200 text-sm mb-2">Health Status</p>
+              <p className="text-white text-sm">{currentStage.lifestyle.healthStatus}</p>
+            </div>
+            <div>
+              <p className="text-purple-200 text-sm mb-2">Current Hobbies</p>
+              <div className="flex flex-wrap gap-2">
+                {currentStage.lifestyle.hobbies.map((hobby, index) => (
+                  <Badge key={index} variant="outline" className="text-purple-300 border-purple-400">
+                    {hobby}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Major Events & Growth */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Major Life Events */}
+        <Card className="bg-yellow-600/20 border-yellow-400/40 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-yellow-300 flex items-center">
+              <Calendar className="h-5 w-5 mr-2" />
+              Major Life Events
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {currentStage.majorEvents.map((event, index) => (
+                <div key={index} className="flex items-center space-x-3 bg-yellow-500/20 rounded-lg p-3">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                  <p className="text-white text-sm">{event}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Future Goals */}
+        <Card className="bg-blue-600/20 border-blue-400/40 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-blue-300 flex items-center">
+              <Target className="h-5 w-5 mr-2" />
+              Future Goals
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {currentStage.futureGoals.map((goal, index) => (
+                <div key={index} className="flex items-center space-x-3 bg-blue-500/20 rounded-lg p-3">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <p className="text-white text-sm">{goal}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Personal Growth */}
+      <Card className="mb-6 bg-indigo-600/20 border-indigo-400/40 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-indigo-300 flex items-center">
+            <BookOpen className="h-5 w-5 mr-2" />
+            Personal Growth Journey
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-white text-lg leading-relaxed">{currentStage.personalGrowth}</p>
+        </CardContent>
+      </Card>
+
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-green-600/40 border-green-400/60 backdrop-blur-sm shadow-lg">
           <CardContent className="p-6">
