@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect, Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane, Heart, Trophy, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Play, Pause, MapPin, Gamepad2 } from "lucide-react";
 import Interactive3DWorld from './Interactive3DWorld';
 import LifeDecisionModal from './LifeDecisionModal';
 import RelationshipSystem from './RelationshipSystem';
@@ -310,10 +311,11 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
-      <div className="flex flex-col lg:flex-row h-screen">
-        {/* 3D Interactive World */}
-        <div className="flex-1 flex flex-col">
-          <div className="relative flex-1 bg-gradient-to-b from-blue-900/30 to-purple-900/30">
+      <div className="flex flex-col h-screen">
+        {/* Main 3D World View */}
+        <div className="flex-1 flex">
+          {/* 3D Interactive World */}
+          <div className="flex-1 relative">
             <Suspense fallback={
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -330,58 +332,52 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
               />
             </Suspense>
 
-            {/* Back Button - Top Left */}
-            <div className="absolute top-4 left-4">
+            {/* Simple Controls - Bottom Left */}
+            <div className="absolute bottom-4 left-4 flex items-center space-x-2">
               <Button
                 variant="ghost"
                 onClick={onBack}
                 className="text-white hover:bg-white/20 border border-white/30 bg-white/10"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Selection
+                Back
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsPlaying(!isPlaying)}
+                className="text-white border-green-400 hover:bg-green-500/30 hover:text-white bg-green-500/20"
+              >
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(viewMode === 'city' ? 'street' : 'city')}
+                className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
+              >
+                <Gamepad2 className="h-4 w-4" />
               </Button>
             </div>
 
-            {/* View Mode Indicator */}
-            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-green-400" />
-                <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
-              </div>
-            </div>
-
-            {/* Controls - Top Center */}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm px-6 py-2 rounded-lg border border-white/20">
-              <div className="flex items-center space-x-4">
-                <div className="text-center">
-                  <h2 className="text-lg font-bold">Age {currentAge}</h2>
-                  <p className="text-xs text-blue-200">{currentStage.career.level} • {formatCurrency(currentStage.financials.income)}/year</p>
-                  <p className="text-xs text-green-200">{currentStage.location}</p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="text-white border-green-400 hover:bg-green-500/30 hover:text-white bg-green-500/20"
-                  >
-                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setViewMode(viewMode === 'city' ? 'street' : 'city')}
-                    className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
-                  >
-                    <Gamepad2 className="h-4 w-4" />
-                  </Button>
+            {/* Simple Age Display - Bottom Right */}
+            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
+              <div className="text-center">
+                <div className="text-xl font-bold">Age {currentAge}</div>
+                <div className="text-sm text-blue-200">{currentStage.career.level}</div>
+                <div className="text-sm text-green-200">{formatCurrency(currentStage.financials.income)}/year</div>
+                <div className="text-xs text-orange-200 flex items-center">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  {currentStage.location}
                 </div>
               </div>
             </div>
 
             {/* Decision Trigger Button */}
             {[25, 30, 35].includes(currentAge) && (
-              <div className="absolute bottom-20 right-4">
+              <div className="absolute top-4 right-4">
                 <Button
                   onClick={() => handleDecisionClick(currentAge)}
                   className="bg-purple-600 hover:bg-purple-700 text-white animate-bounce"
@@ -392,12 +388,29 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
             )}
           </div>
 
-          {/* Timeline Scrubber */}
-          <div className="px-8 py-6 bg-black/20">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Life Timeline (Age {currentAge} • {currentStage.year})
-              </label>
+          {/* Relationship Panel */}
+          <div className="w-80 p-4 bg-black/10 border-l border-white/10 overflow-y-auto">
+            <RelationshipSystem
+              currentAge={currentAge}
+              careerPath={careerPath}
+              userLocation={userLocation}
+              onRelationshipAction={handleRelationshipAction}
+            />
+          </div>
+        </div>
+
+        {/* Clean Timeline Scrubber */}
+        <div className="px-8 py-4 bg-black/30 border-t border-white/20">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-300">
+                  Life Timeline
+                </span>
+                <span className="text-sm text-blue-300">
+                  {currentStage.year} • Age {currentAge}
+                </span>
+              </div>
               <Slider
                 value={[currentAge]}
                 onValueChange={([value]) => setCurrentAge(value)}
@@ -406,32 +419,28 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
                 step={1}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
-                {lifeStages.map(stage => (
-                  <div key={stage.age} className="text-center">
-                    <div>{stage.age}</div>
-                    <div className="text-[10px] text-green-300">{stage.location}</div>
+            </div>
+            
+            {/* Age markers */}
+            <div className="flex justify-between text-xs text-gray-400">
+              {lifeStages.map(stage => (
+                <div key={stage.age} className="text-center flex-1">
+                  <div className={`font-medium ${stage.age === currentAge ? 'text-yellow-400' : ''}`}>
+                    {stage.age}
                   </div>
-                ))}
-              </div>
+                  <div className="text-[10px] text-blue-300 truncate">
+                    {stage.location.split(',')[0]}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-
-        {/* Relationship Panel */}
-        <div className="lg:w-1/3 p-4 bg-black/10 border-l border-white/10 overflow-y-auto max-h-screen">
-          <RelationshipSystem
-            currentAge={currentAge}
-            careerPath={careerPath}
-            userLocation={userLocation}
-            onRelationshipAction={handleRelationshipAction}
-          />
         </div>
       </div>
 
       {/* Building Detail Panel */}
       {selectedBuilding && (
-        <Card className="fixed bottom-8 right-8 w-80 bg-black/80 backdrop-blur-sm border-white/20">
+        <Card className="fixed bottom-20 right-8 w-80 bg-black/80 backdrop-blur-sm border-white/20">
           <CardContent className="p-4">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold text-white capitalize">{selectedBuilding.type}</h3>
