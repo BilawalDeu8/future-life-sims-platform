@@ -34,6 +34,7 @@ const Simulation = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [showPersonalization, setShowPersonalization] = useState(false);
   const [scenarios, setScenarios] = useState<LifeScenario[]>([]);
+  const [currentMobileView, setCurrentMobileView] = useState(0);
   const isMobile = useIsMobile();
 
   // Get user's location from localStorage (set during onboarding)
@@ -244,6 +245,66 @@ const Simulation = () => {
     );
   }
 
+  // Mobile view components
+  const mobileViews = [
+    // Header view
+    <div key="header" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4">
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+          Life Path Simulator
+        </h1>
+        <p className="text-lg text-gray-300 mb-2">
+          Explore different career paths
+        </p>
+        <p className="text-sm text-blue-200 mb-6">
+          Personalized for {userLocation}
+        </p>
+        <div className="space-y-3">
+          <Button
+            onClick={() => navigate('/timeline')}
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-3 text-white"
+          >
+            Experience Your Life Timeline
+          </Button>
+          <Button
+            onClick={() => setShowComparison(true)}
+            className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 py-3 text-white"
+          >
+            <GitCompare className="h-5 w-5 mr-2" />
+            Compare Life Paths
+          </Button>
+          <Button
+            onClick={() => navigate('/community')}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 text-white"
+          >
+            <Users className="h-5 w-5 mr-2" />
+            Connect with Community
+          </Button>
+          <Button
+            onClick={() => navigate('/timeline')}
+            className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 py-3 text-white"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Create Custom Path
+          </Button>
+        </div>
+      </div>
+    </div>,
+    // Scenarios grid view
+    <div key="scenarios" className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4">
+      <div className="grid grid-cols-1 gap-6">
+        {scenarios.map((scenario) => (
+          <TouchOptimizedCard
+            key={scenario.id}
+            scenario={scenario}
+            onSelect={setSelectedScenario}
+            index={scenarios.indexOf(scenario)}
+          />
+        ))}
+      </div>
+    </div>
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
       {/* Personalization Widget */}
@@ -257,137 +318,157 @@ const Simulation = () => {
         </div>
       )}
 
-      {/* Header */}
-      <div className="text-center py-12">
-        <div className="flex justify-center items-center mb-4">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Life Path Simulator
-          </h1>
-          <Button
-            onClick={() => setShowPersonalization(true)}
-            className="ml-4 bg-purple-600/20 border border-purple-400 text-purple-300 hover:bg-purple-600/30 hover:text-white"
-            size="sm"
+      {isMobile ? (
+        <>
+          <MobileHeader
+            onPersonalizationClick={() => setShowPersonalization(true)}
+            onComparisonClick={() => setShowComparison(true)}
+            onCommunityClick={() => navigate('/community')}
+            onTimelineClick={() => navigate('/timeline')}
+          />
+          <SwipeNavigation
+            currentIndex={currentMobileView}
+            onIndexChange={setCurrentMobileView}
+            className="flex-1"
           >
-            <Settings className="h-4 w-4 mr-2" />
-            Personalize
-          </Button>
-        </div>
-        <p className="text-xl text-gray-300 mb-4">
-          Explore different career paths and see where they lead in {userLocation}
-        </p>
-        <p className="text-sm text-blue-200 mb-8">
-          Scenarios personalized based on your location and preferences
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Button
-            onClick={() => navigate('/timeline')}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-8 py-3 text-white"
-          >
-            Experience Your Life Timeline
-          </Button>
-          <Button
-            onClick={() => setShowComparison(true)}
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3 text-white"
-          >
-            <GitCompare className="h-5 w-5 mr-2" />
-            Compare Life Paths
-          </Button>
-          <Button
-            onClick={() => navigate('/community')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 text-white"
-          >
-            <Users className="h-5 w-5 mr-2" />
-            Connect with Community
-          </Button>
-          <Button
-            onClick={() => navigate('/timeline')}
-            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 px-8 py-3 text-white"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Create Custom Path
-          </Button>
-        </div>
-      </div>
+            {mobileViews}
+          </SwipeNavigation>
+        </>
+      ) : (
+        <>
+          {/* Desktop Header */}
+          <div className="text-center py-12">
+            <div className="flex justify-center items-center mb-4">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Life Path Simulator
+              </h1>
+              <Button
+                onClick={() => setShowPersonalization(true)}
+                className="ml-4 bg-purple-600/20 border border-purple-400 text-purple-300 hover:bg-purple-600/30 hover:text-white"
+                size="sm"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Personalize
+              </Button>
+            </div>
+            <p className="text-xl text-gray-300 mb-4">
+              Explore different career paths and see where they lead in {userLocation}
+            </p>
+            <p className="text-sm text-blue-200 mb-8">
+              Scenarios personalized based on your location and preferences
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Button
+                onClick={() => navigate('/timeline')}
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-8 py-3 text-white"
+              >
+                Experience Your Life Timeline
+              </Button>
+              <Button
+                onClick={() => setShowComparison(true)}
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3 text-white"
+              >
+                <GitCompare className="h-5 w-5 mr-2" />
+                Compare Life Paths
+              </Button>
+              <Button
+                onClick={() => navigate('/community')}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 text-white"
+              >
+                <Users className="h-5 w-5 mr-2" />
+                Connect with Community
+              </Button>
+              <Button
+                onClick={() => navigate('/timeline')}
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 px-8 py-3 text-white"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Custom Path
+              </Button>
+            </div>
+          </div>
 
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {scenarios.map((scenario) => (
-            <Card 
-              key={scenario.id}
-              className="bg-white/10 backdrop-blur-sm border-white/20 hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden"
-              onClick={() => setSelectedScenario(scenario)}
-            >
-              <div className="relative overflow-hidden rounded-t-lg">
-                <img 
-                  src={`https://images.unsplash.com/${scenario.image}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
-                  alt={scenario.title}
-                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-2xl font-bold text-white mb-1">{scenario.title}</h3>
-                  <p className="text-blue-200">{scenario.career}</p>
-                </div>
-              </div>
-              
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-purple-400" />
-                      <span className="text-gray-300">{scenario.location}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <DollarSign className="h-4 w-4 mr-1 text-green-400" />
-                      <span className="text-gray-300">{scenario.salaryRange}</span>
+          {/* Desktop Content */}
+          <div className="max-w-6xl mx-auto px-4 pb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {scenarios.map((scenario) => (
+                <Card 
+                  key={scenario.id}
+                  className="bg-white/10 backdrop-blur-sm border-white/20 hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden"
+                  onClick={() => setSelectedScenario(scenario)}
+                >
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img 
+                      src={`https://images.unsplash.com/${scenario.image}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
+                      alt={scenario.title}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-2xl font-bold text-white mb-1">{scenario.title}</h3>
+                      <p className="text-blue-200">{scenario.career}</p>
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2 text-blue-400" />
-                        <span className="text-sm text-gray-300">Work-Life Balance</span>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center">
+                          <MapPin className="h-4 w-4 mr-2 text-purple-400" />
+                          <span className="text-gray-300">{scenario.location}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <DollarSign className="h-4 w-4 mr-1 text-green-400" />
+                          <span className="text-gray-300">{scenario.salaryRange}</span>
+                        </div>
                       </div>
-                      <div className="w-24 bg-white/20 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${scenario.workLifeBalance}%` }}
-                        />
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-blue-400" />
+                            <span className="text-sm text-gray-300">Work-Life Balance</span>
+                          </div>
+                          <div className="w-24 bg-white/20 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${scenario.workLifeBalance}%` }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Zap className="h-4 w-4 mr-2 text-yellow-400" />
+                            <span className="text-sm text-gray-300">Stress Level</span>
+                          </div>
+                          <div className="w-24 bg-white/20 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-yellow-400 to-red-400 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${scenario.stressLevel}%` }}
+                            />
+                          </div>
+                        </div>
                       </div>
+                      
+                      <p className="text-blue-200 text-sm leading-relaxed">
+                        {scenario.description}
+                      </p>
+                      
+                      <Button 
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300 text-white"
+                      >
+                        Live This Future
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
                     </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Zap className="h-4 w-4 mr-2 text-yellow-400" />
-                        <span className="text-sm text-gray-300">Stress Level</span>
-                      </div>
-                      <div className="w-24 bg-white/20 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-yellow-400 to-red-400 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${scenario.stressLevel}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <p className="text-blue-200 text-sm leading-relaxed">
-                    {scenario.description}
-                  </p>
-                  
-                  <Button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300 text-white"
-                  >
-                    Live This Future
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

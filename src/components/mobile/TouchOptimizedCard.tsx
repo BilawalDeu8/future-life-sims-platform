@@ -66,8 +66,6 @@ const TouchOptimizedCard: React.FC<TouchOptimizedCardProps> = ({ scenario, onSel
         onMouseDown={startPressTimer}
         onMouseUp={cancelPressTimer}
         onMouseLeave={cancelPressTimer}
-        onTouchStart={() => startPressTimer()}
-        onTouchEnd={cancelPressTimer}
       >
         <div className="relative overflow-hidden rounded-t-lg">
           <img 
