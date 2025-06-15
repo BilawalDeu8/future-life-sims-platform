@@ -128,9 +128,16 @@ const Simulation = () => {
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Your Future Lives Await
             </h1>
-            <p className="text-xl text-blue-200">
+            <p className="text-xl text-blue-200 mb-4">
               Experience different career paths before you choose. Click any scenario to live that future.
             </p>
+            <Button 
+              onClick={() => window.location.href = '/timeline'}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+              <Clock className="mr-2 h-4 w-4" />
+              Experience Your Life Timeline
+            </Button>
           </div>
         </div>
       </div>
