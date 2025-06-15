@@ -14,6 +14,7 @@ import Timeline from "./pages/Timeline";
 import Community from "./pages/Community";
 import CreatePath from "./pages/CreatePath";
 import RealWorldData from "./pages/RealWorldData";
+import LifeCanvas from "./pages/LifeCanvas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -101,6 +102,11 @@ const App = () => (
           <Route path="/timeline" element={
             <ProtectedRoute>
               <Timeline />
+            </ProtectedRoute>
+          } />
+          <Route path="/life-canvas" element={
+            <ProtectedRoute>
+              <LifeCanvas />
             </ProtectedRoute>
           } />
           <Route path="/create-path" element={
