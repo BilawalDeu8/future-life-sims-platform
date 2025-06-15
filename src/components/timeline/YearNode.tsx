@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +35,7 @@ interface YearNodeProps {
   isBookmarked: boolean;
   onClick: () => void;
   onBookmark: () => void;
+  onDecisionClick?: (age: number) => void;
 }
 
 const YearNode: React.FC<YearNodeProps> = ({
@@ -43,7 +43,8 @@ const YearNode: React.FC<YearNodeProps> = ({
   isSelected,
   isBookmarked,
   onClick,
-  onBookmark
+  onBookmark,
+  onDecisionClick
 }) => {
   const { year, age, isCurrentYear, isCompleted, hasDecision, hasMilestone, lifeData } = yearData;
 
@@ -74,7 +75,14 @@ const YearNode: React.FC<YearNodeProps> = ({
       {/* Decision Point Indicator */}
       {hasDecision && (
         <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
-          <Badge variant="destructive" className="animate-bounce bg-purple-600 hover:bg-purple-700">
+          <Badge 
+            variant="destructive" 
+            className="animate-bounce bg-purple-600 hover:bg-purple-700 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDecisionClick?.(age);
+            }}
+          >
             Big Decision
           </Badge>
         </div>

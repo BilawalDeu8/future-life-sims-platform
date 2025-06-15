@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane, Heart, Trophy, Gamepad2 } from "lucide-react";
 import Interactive3DWorld from './Interactive3DWorld';
+import LifeDecisionModal from './LifeDecisionModal';
 
 interface LifeStage {
   age: number;
@@ -58,6 +58,8 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedBuilding, setSelectedBuilding] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'street' | 'city'>('city');
+  const [showDecisionModal, setShowDecisionModal] = useState(false);
+  const [currentDecision, setCurrentDecision] = useState<any>(null);
 
   // Get user's location from localStorage - Fixed to use correct location
   const getUserLocation = () => {
@@ -173,6 +175,104 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const lifeStages = generateLifeStages();
   const currentStage = lifeStages.find(stage => stage.age === currentAge) || lifeStages[0];
 
+  // Generate decisions for specific ages
+  const generateDecision = (age: number) => {
+    const decisions = {
+      25: {
+        year: 2027,
+        title: "Career Crossroads",
+        description: "You've been offered a senior role at a bigger company with higher pay, but it means leaving your current team where you're comfortable.",
+        options: [
+          {
+            id: 1,
+            text: "Take the promotion at the new company",
+            impact: "Higher salary and faster career growth, but more pressure and longer hours",
+            consequences: { career: 20, finances: 25, relationships: -10, happiness: 5 }
+          },
+          {
+            id: 2,
+            text: "Stay at current company and grow internally",
+            impact: "Better work-life balance and team relationships, but slower financial growth",
+            consequences: { career: 5, finances: 5, relationships: 15, happiness: 15 }
+          },
+          {
+            id: 3,
+            text: "Start your own side business",
+            impact: "Potential for huge returns but high risk and significant time investment",
+            consequences: { career: 30, finances: -15, relationships: -5, happiness: 20 }
+          }
+        ]
+      },
+      30: {
+        year: 2032,
+        title: "Life Priorities",
+        description: "Your career is going well, but you're thinking about settling down. How do you want to prioritize the next phase of your life?",
+        options: [
+          {
+            id: 1,
+            text: "Focus on family and relationships",
+            impact: "Start a family, buy a house, prioritize work-life balance",
+            consequences: { career: -5, finances: -10, relationships: 25, happiness: 20 }
+          },
+          {
+            id: 2,
+            text: "Double down on career ambitions",
+            impact: "Pursue executive roles, maximize earning potential",
+            consequences: { career: 25, finances: 30, relationships: -10, happiness: 5 }
+          },
+          {
+            id: 3,
+            text: "Pursue passion projects and travel",
+            impact: "Take a sabbatical, travel the world, explore creative interests",
+            consequences: { career: -10, finances: -20, relationships: 10, happiness: 30 }
+          }
+        ]
+      },
+      35: {
+        year: 2037,
+        title: "Investment Opportunity",
+        description: "A friend is starting a promising tech startup and has offered you a chance to invest or join as a co-founder.",
+        options: [
+          {
+            id: 1,
+            text: "Invest money but keep current job",
+            impact: "Potential financial returns without career risk",
+            consequences: { career: 0, finances: 15, relationships: 5, happiness: 5 }
+          },
+          {
+            id: 2,
+            text: "Join as co-founder and quit your job",
+            impact: "High risk, high reward - could be life-changing",
+            consequences: { career: 25, finances: -25, relationships: -5, happiness: 20 }
+          },
+          {
+            id: 3,
+1            text: "Decline and focus on stability",
+            impact: "Keep your secure job and avoid the risk",
+            consequences: { career: 5, finances: 10, relationships: 10, happiness: -5 }
+          }
+        ]
+      }
+    };
+
+    return decisions[age as keyof typeof decisions];
+  };
+
+  const handleDecisionClick = (age: number) => {
+    const decision = generateDecision(age);
+    if (decision) {
+      setCurrentDecision(decision);
+      setShowDecisionModal(true);
+    }
+  };
+
+  const handleDecisionMade = (decisionId: number) => {
+    console.log(`Decision made: ${decisionId} for age ${currentDecision?.year}`);
+    setShowDecisionModal(false);
+    setCurrentDecision(null);
+    // Here you could update the life stages based on the decision
+  };
+
   // Auto-play functionality
   useEffect(() => {
     if (isPlaying) {
@@ -271,6 +371,18 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
             <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
           </div>
         </div>
+
+        {/* Decision Trigger Button */}
+        {[25, 30, 35].includes(currentAge) && (
+          <div className="absolute top-4 right-4">
+            <Button
+              onClick={() => handleDecisionClick(currentAge)}
+              className="bg-purple-600 hover:bg-purple-700 text-white animate-bounce"
+            >
+              Big Decision Available!
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Timeline Scrubber */}
@@ -396,6 +508,15 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Decision Modal */}
+      {showDecisionModal && currentDecision && (
+        <LifeDecisionModal
+          decision={currentDecision}
+          onDecisionMade={handleDecisionMade}
+          onClose={() => setShowDecisionModal(false)}
+        />
+      )}
     </div>
   );
 };
