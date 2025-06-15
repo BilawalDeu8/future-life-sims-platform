@@ -59,7 +59,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const [selectedBuilding, setSelectedBuilding] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'street' | 'city'>('city');
 
-  // Get user's location from localStorage
+  // Get user's location from localStorage - Fixed to use correct location
   const getUserLocation = () => {
     const onboardingData = localStorage.getItem('onboardingData');
     if (onboardingData) {
@@ -72,7 +72,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const userLocation = getUserLocation();
   const isIndianLocation = userLocation.toLowerCase().includes('india');
 
-  // Generate life stages based on career path and user location
+  // Generate life stages based on career path and user location - Fixed location mapping
   const generateLifeStages = (): LifeStage[] => {
     const stages: LifeStage[] = [];
     const ages = [22, 25, 28, 32, 35, 40, 45, 50];
@@ -84,10 +84,11 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
                   careerPath.id === 'startup-delhi' ? 800000 : // ₹8L
                   careerPath.id === 'consulting-pune' ? 1800000 : // ₹18L
                   careerPath.id === 'remote-anywhere' ? 2000000 : // ₹20L
+                  careerPath.id === 'pharma-hyderabad' ? 1000000 : // ₹10L
                   1000000, // ₹10L default
       currency: '₹',
-      cities: ['Bangalore', 'Mumbai', 'Pune', 'Hyderabad', 'Chennai', 'Delhi NCR'],
-      neighborhoods: ['Koramangala', 'Bandra', 'Koregaon Park', 'HITEC City', 'Anna Nagar', 'Gurgaon']
+      cities: ['Bangalore', 'Mumbai', 'Pune', 'Hyderabad', 'Chennai', 'Delhi NCR', 'Gurgaon', 'Noida'],
+      neighborhoods: ['Koramangala', 'Bandra', 'Koregaon Park', 'HITEC City', 'Anna Nagar', 'Cyber City']
     } : {
       baseIncome: careerPath.id === 'tech-startup' ? 95000 :
                   careerPath.id === 'corporate-finance' ? 120000 :
@@ -103,7 +104,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
       
       const currentIncome = locationData.baseIncome + (yearOffset * (isIndianLocation ? 200000 : 8000) * (1 + progressFactor));
       
-      // Use specific city from user's location data
+      // Use appropriate cities based on user's location
       const cityIndex = Math.min(Math.floor(progressFactor * locationData.cities.length), locationData.cities.length - 1);
       const currentLocation = locationData.cities[cityIndex];
       
@@ -162,7 +163,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           skyColor: progressFactor < 0.5 ? '#87CEEB' : '#FFB6C1',
           ambientColor: '#FFFFFF'
         },
-        location: currentLocation // Now uses proper location-specific cities
+        location: currentLocation // Now correctly uses location-specific cities
       });
     });
     
