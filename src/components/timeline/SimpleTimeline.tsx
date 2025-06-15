@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Play, Pause, Home, Briefcase, Heart, DollarSign, MapPin, Trophy, AlertCircle, TrendingUp, Calendar, Users, Zap, Target, Coffee, BookOpen, Plane } from "lucide-react";
 import LifeDecisionModal from './LifeDecisionModal';
@@ -50,6 +49,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [currentDecision, setCurrentDecision] = useState<any>(null);
+  const [decisionEffects, setDecisionEffects] = useState<Record<number, any>>({});
 
   // Get user's location
   const getUserLocation = () => {
@@ -64,7 +64,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
   const userLocation = getUserLocation();
   const isIndianLocation = userLocation.toLowerCase().includes('india');
 
-  // Generate comprehensive life stages
+  // Generate comprehensive life stages with decision effects
   const generateLifeStages = (): LifeStage[] => {
     const stages: LifeStage[] = [];
     const ages = [22, 25, 28, 32, 35, 40, 45, 50];
@@ -145,7 +145,25 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
     ages.forEach((age, index) => {
       const yearOffset = age - 22;
       const progressFactor = index / (ages.length - 1);
-      const currentIncome = baseIncome + (yearOffset * (isIndianLocation ? 200000 : 12000));
+      let currentIncome = baseIncome + (yearOffset * (isIndianLocation ? 200000 : 12000));
+      let savingsMultiplier = 0.15;
+      let happinessBonus = 0;
+      let stressModifier = 0;
+      let workLifeBalanceModifier = 0;
+      
+      // Apply decision effects
+      Object.keys(decisionEffects).forEach(decisionAge => {
+        const decisionAgeNum = parseInt(decisionAge);
+        if (age >= decisionAgeNum) {
+          const effect = decisionEffects[decisionAgeNum];
+          currentIncome += (currentIncome * effect.finances / 100);
+          happinessBonus += effect.happiness;
+          stressModifier += effect.stress || 0;
+          workLifeBalanceModifier += effect.workLifeBalance || 0;
+          savingsMultiplier += (effect.finances / 100) * 0.1;
+        }
+      });
+      
       const data = lifestyleData[index];
       
       stages.push({
@@ -157,22 +175,22 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         career: progressFactor < 0.3 ? 'Junior Developer' :
                 progressFactor < 0.6 ? 'Mid-level Developer' :
                 progressFactor < 0.8 ? 'Senior Developer' : 'Tech Lead',
-        income: currentIncome,
+        income: Math.floor(currentIncome),
         location: cities[Math.min(Math.floor(progressFactor * cities.length), cities.length - 1)],
         housing: progressFactor < 0.3 ? 'Studio Apartment' :
                  progressFactor < 0.6 ? '1BHK Apartment' :
                  progressFactor < 0.8 ? '2BHK House' : '3BHK Villa',
         relationship: progressFactor < 0.4 ? 'Single' :
                       progressFactor < 0.7 ? 'In Relationship' : 'Married',
-        savings: Math.floor(currentIncome * 0.15 * yearOffset),
+        savings: Math.floor(currentIncome * savingsMultiplier * yearOffset),
         achievements: progressFactor > 0.3 ? ['First promotion'] : [],
         challenges: progressFactor < 0.3 ? ['Learning curve'] : [],
         hasDecision: [24, 26, 28, 30, 32, 35, 38, 42, 45].includes(age),
         milestone: progressFactor === 0.5 ? 'First major promotion' : undefined,
         lifestyle: {
-          happiness: Math.floor(60 + progressFactor * 30),
-          stress: Math.floor(30 + progressFactor * 40),
-          workLifeBalance: Math.floor(50 + progressFactor * 30),
+          happiness: Math.max(20, Math.min(100, Math.floor(60 + progressFactor * 30) + happinessBonus)),
+          stress: Math.max(10, Math.min(90, Math.floor(30 + progressFactor * 40) + stressModifier)),
+          workLifeBalance: Math.max(20, Math.min(100, Math.floor(50 + progressFactor * 30) + workLifeBalanceModifier)),
           socialLife: data.socialLife,
           hobbies: data.hobbies,
           healthStatus: data.healthStatus
@@ -183,7 +201,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
           food: Math.floor(currentIncome * 0.08 / 12),
           entertainment: Math.floor(currentIncome * 0.05 / 12),
           transport: Math.floor(currentIncome * 0.06 / 12),
-          savings: Math.floor(currentIncome * 0.15 / 12)
+          savings: Math.floor(currentIncome * savingsMultiplier / 12)
         },
         futureGoals: data.futureGoals,
         personalGrowth: data.personalGrowth
@@ -232,13 +250,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Get my own apartment",
             impact: "More independence but higher expenses",
-            consequences: { career: 0, finances: -15, relationships: 5, happiness: 20 }
+            consequences: { career: 0, finances: -15, relationships: 5, happiness: 20, stress: -10, workLifeBalance: 10 }
           },
           {
             id: 2,
             text: "Continue with roommates", 
             impact: "Save money but less privacy",
-            consequences: { career: 0, finances: 15, relationships: 10, happiness: -5 }
+            consequences: { career: 0, finances: 15, relationships: 10, happiness: -5, stress: 5, workLifeBalance: -5 }
           }
         ]
       },
@@ -251,13 +269,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Move in together",
             impact: "Deeper commitment and shared expenses",
-            consequences: { career: -5, finances: 10, relationships: 25, happiness: 15 }
+            consequences: { career: -5, finances: 10, relationships: 25, happiness: 15, stress: -5, workLifeBalance: 5 }
           },
           {
             id: 2,
             text: "Wait and keep dating", 
             impact: "Maintain independence for now",
-            consequences: { career: 5, finances: -5, relationships: -10, happiness: 0 }
+            consequences: { career: 5, finances: -5, relationships: -10, happiness: 0, stress: 10, workLifeBalance: 0 }
           }
         ]
       },
@@ -270,13 +288,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Take the promotion and relocate",
             impact: "Career growth but social disruption",
-            consequences: { career: 25, finances: 30, relationships: -20, happiness: 0 }
+            consequences: { career: 25, finances: 30, relationships: -20, happiness: 0, stress: 15, workLifeBalance: -10 }
           },
           {
             id: 2,
             text: "Stay and negotiate internally", 
             impact: "Comfort zone but slower growth",
-            consequences: { career: 10, finances: 10, relationships: 15, happiness: 10 }
+            consequences: { career: 10, finances: 10, relationships: 15, happiness: 10, stress: -5, workLifeBalance: 5 }
           }
         ]
       },
@@ -289,13 +307,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Say yes and start planning wedding",
             impact: "Commitment to shared future and goals",
-            consequences: { career: -5, finances: -10, relationships: 30, happiness: 25 }
+            consequences: { career: -5, finances: -10, relationships: 30, happiness: 25, stress: 10, workLifeBalance: -5 }
           },
           {
             id: 2,
             text: "Ask for more time to think", 
             impact: "Maintain current status but risk relationship",
-            consequences: { career: 5, finances: 5, relationships: -15, happiness: -10 }
+            consequences: { career: 5, finances: 5, relationships: -15, happiness: -10, stress: 15, workLifeBalance: 0 }
           }
         ]
       },
@@ -308,13 +326,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Start trying for a baby",
             impact: "New chapter but major responsibility",
-            consequences: { career: -10, finances: -20, relationships: 20, happiness: 25 }
+            consequences: { career: -10, finances: -20, relationships: 20, happiness: 25, stress: 20, workLifeBalance: -15 }
           },
           {
             id: 2,
             text: "Wait a few more years", 
             impact: "Focus on career and financial stability first",
-            consequences: { career: 15, finances: 20, relationships: -5, happiness: 0 }
+            consequences: { career: 15, finances: 20, relationships: -5, happiness: 0, stress: -5, workLifeBalance: 10 }
           }
         ]
       },
@@ -327,13 +345,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Buy a house",
             impact: "Financial commitment but long-term investment",
-            consequences: { career: 0, finances: -25, relationships: 15, happiness: 20 }
+            consequences: { career: 0, finances: -25, relationships: 15, happiness: 20, stress: 15, workLifeBalance: 5 }
           },
           {
             id: 2,
             text: "Continue renting and invest the money", 
             impact: "Financial flexibility but no property ownership",
-            consequences: { career: 5, finances: 15, relationships: -5, happiness: -5 }
+            consequences: { career: 5, finances: 15, relationships: -5, happiness: -5, stress: -10, workLifeBalance: 0 }
           }
         ]
       },
@@ -346,13 +364,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Accept the executive role",
             impact: "Career peak but family time sacrifice",
-            consequences: { career: 30, finances: 35, relationships: -20, happiness: 5 }
+            consequences: { career: 30, finances: 35, relationships: -20, happiness: 5, stress: 25, workLifeBalance: -25 }
           },
           {
             id: 2,
             text: "Decline and focus on family", 
             impact: "Family priority but career plateau",
-            consequences: { career: -5, finances: 0, relationships: 25, happiness: 20 }
+            consequences: { career: -5, finances: 0, relationships: 25, happiness: 20, stress: -15, workLifeBalance: 20 }
           }
         ]
       },
@@ -365,13 +383,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Make major lifestyle changes",
             impact: "Better health but requires discipline",
-            consequences: { career: -5, finances: -10, relationships: 10, happiness: 25 }
+            consequences: { career: -5, finances: -10, relationships: 10, happiness: 25, stress: -20, workLifeBalance: 15 }
           },
           {
             id: 2,
             text: "Continue current lifestyle", 
             impact: "Maintain status quo but health risks",
-            consequences: { career: 5, finances: 5, relationships: -5, happiness: -15 }
+            consequences: { career: 5, finances: 5, relationships: -5, happiness: -15, stress: 10, workLifeBalance: -10 }
           }
         ]
       },
@@ -384,13 +402,13 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             id: 1,
             text: "Make the investment",
             impact: "High risk, high reward opportunity",
-            consequences: { career: 10, finances: 25, relationships: 0, happiness: 15 }
+            consequences: { career: 10, finances: 25, relationships: 0, happiness: 15, stress: 15, workLifeBalance: 0 }
           },
           {
             id: 2,
             text: "Stick to conservative investments", 
             impact: "Safe but slower wealth building",
-            consequences: { career: 0, finances: 10, relationships: 5, happiness: 5 }
+            consequences: { career: 0, finances: 10, relationships: 5, happiness: 5, stress: -5, workLifeBalance: 5 }
           }
         ]
       }
@@ -401,6 +419,20 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       setCurrentDecision(decision);
       setShowDecisionModal(true);
     }
+  };
+
+  const handleDecisionMade = (decisionId: number) => {
+    if (currentDecision) {
+      const selectedOption = currentDecision.options.find((opt: any) => opt.id === decisionId);
+      if (selectedOption && selectedOption.consequences) {
+        setDecisionEffects(prev => ({
+          ...prev,
+          [currentAge]: selectedOption.consequences
+        }));
+      }
+    }
+    setShowDecisionModal(false);
+    setCurrentDecision(null);
   };
 
   return (
@@ -430,7 +462,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         </Button>
       </div>
 
-      {/* Enhanced Current Stage Highlight */}
+      {/* Enhanced Current Stage Highlight with Darker Text */}
       <Card className="mb-8 bg-gradient-to-r from-blue-600/40 to-purple-600/40 border-blue-400/60 backdrop-blur-sm shadow-2xl">
         <CardContent className="p-8">
           {/* Age and Year Header with Better Contrast */}
@@ -441,8 +473,8 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
                 <p className="text-blue-200 text-lg font-medium mt-1">{currentStage.year}</p>
               </div>
               <div>
-                <p className="text-blue-200 text-xl font-medium">{currentStage.title}</p>
-                <p className="text-white/80 text-base mt-1">{currentStage.location}</p>
+                <p className="text-blue-100 text-xl font-medium">{currentStage.title}</p>
+                <p className="text-gray-100 text-base mt-1 font-medium">{currentStage.location}</p>
               </div>
             </div>
             <div className="text-right bg-gradient-to-br from-green-500/30 to-green-600/30 rounded-xl p-4 border border-green-400/50">
@@ -451,47 +483,47 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             </div>
           </div>
           
-          {/* Life Details Grid */}
+          {/* Life Details Grid with Darker Text */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
             <div className="flex items-center space-x-3 bg-blue-500/20 rounded-lg p-3 border border-blue-400/30">
               <Briefcase className="h-6 w-6 text-blue-300 flex-shrink-0" />
               <div>
-                <p className="text-xs text-blue-200 font-medium">Career</p>
-                <p className="text-white font-semibold text-sm">{currentStage.career}</p>
+                <p className="text-xs text-blue-100 font-medium">Career</p>
+                <p className="text-gray-100 font-semibold text-sm">{currentStage.career}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-3 bg-orange-500/20 rounded-lg p-3 border border-orange-400/30">
               <Home className="h-6 w-6 text-orange-300 flex-shrink-0" />
               <div>
-                <p className="text-xs text-orange-200 font-medium">Housing</p>
-                <p className="text-white font-semibold text-sm">{currentStage.housing}</p>
+                <p className="text-xs text-orange-100 font-medium">Housing</p>
+                <p className="text-gray-100 font-semibold text-sm">{currentStage.housing}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-3 bg-pink-500/20 rounded-lg p-3 border border-pink-400/30">
               <Heart className="h-6 w-6 text-pink-300 flex-shrink-0" />
               <div>
-                <p className="text-xs text-pink-200 font-medium">Relationship</p>
-                <p className="text-white font-semibold text-sm">{currentStage.relationship}</p>
+                <p className="text-xs text-pink-100 font-medium">Relationship</p>
+                <p className="text-gray-100 font-semibold text-sm">{currentStage.relationship}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-3 bg-green-500/20 rounded-lg p-3 border border-green-400/30">
               <MapPin className="h-6 w-6 text-green-300 flex-shrink-0" />
               <div>
-                <p className="text-xs text-green-200 font-medium">Location</p>
-                <p className="text-white font-semibold text-sm">{currentStage.location}</p>
+                <p className="text-xs text-green-100 font-medium">Location</p>
+                <p className="text-gray-100 font-semibold text-sm">{currentStage.location}</p>
               </div>
             </div>
           </div>
 
-          {/* Lifestyle Metrics */}
+          {/* Lifestyle Metrics with Darker Text */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div className="bg-yellow-500/20 rounded-lg p-3 border border-yellow-400/30">
               <div className="flex items-center justify-between">
-                <span className="text-yellow-200 text-xs font-medium">Happiness</span>
-                <span className="text-yellow-300 font-bold">{currentStage.lifestyle.happiness}%</span>
+                <span className="text-yellow-100 text-xs font-medium">Happiness</span>
+                <span className="text-yellow-200 font-bold">{currentStage.lifestyle.happiness}%</span>
               </div>
               <div className="w-full bg-yellow-900/30 rounded-full h-2 mt-2">
                 <div 
@@ -503,8 +535,8 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             
             <div className="bg-red-500/20 rounded-lg p-3 border border-red-400/30">
               <div className="flex items-center justify-between">
-                <span className="text-red-200 text-xs font-medium">Stress</span>
-                <span className="text-red-300 font-bold">{currentStage.lifestyle.stress}%</span>
+                <span className="text-red-100 text-xs font-medium">Stress</span>
+                <span className="text-red-200 font-bold">{currentStage.lifestyle.stress}%</span>
               </div>
               <div className="w-full bg-red-900/30 rounded-full h-2 mt-2">
                 <div 
@@ -516,8 +548,8 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
             
             <div className="bg-purple-500/20 rounded-lg p-3 border border-purple-400/30">
               <div className="flex items-center justify-between">
-                <span className="text-purple-200 text-xs font-medium">Work-Life Balance</span>
-                <span className="text-purple-300 font-bold">{currentStage.lifestyle.workLifeBalance}%</span>
+                <span className="text-purple-100 text-xs font-medium">Work-Life Balance</span>
+                <span className="text-purple-200 font-bold">{currentStage.lifestyle.workLifeBalance}%</span>
               </div>
               <div className="w-full bg-purple-900/30 rounded-full h-2 mt-2">
                 <div 
@@ -534,9 +566,6 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       <Card className="mb-6 bg-black/40 border-white/30 backdrop-blur-sm shadow-xl">
         <CardContent className="p-8">
           <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute top-12 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full shadow-lg"></div>
-            
             {/* Timeline Nodes */}
             <div className="flex justify-between relative">
               {lifeStages.map((stage, index) => (
@@ -598,22 +627,34 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         </CardContent>
       </Card>
 
-      {/* Timeline Scrubber */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-medium text-gray-200">Navigate Timeline</span>
-          <span className="text-sm text-blue-200 bg-blue-500/20 px-3 py-1 rounded-full border border-blue-400/30">
-            {currentStage.year} • {currentStage.location}
-          </span>
-        </div>
-        <Slider
-          value={[currentAge]}
-          onValueChange={([value]) => setCurrentAge(value)}
-          min={22}
-          max={50}
-          step={1}
-          className="w-full"
-        />
+      {/* Navigation Buttons */}
+      <div className="mb-6 flex justify-center space-x-4">
+        <Button
+          onClick={() => {
+            const currentIndex = lifeStages.findIndex(stage => stage.age === currentAge);
+            if (currentIndex > 0) {
+              setCurrentAge(lifeStages[currentIndex - 1].age);
+            }
+          }}
+          variant="outline"
+          className="text-white border-white/50 hover:bg-white/20"
+          disabled={currentAge === lifeStages[0].age}
+        >
+          Previous Year
+        </Button>
+        <Button
+          onClick={() => {
+            const currentIndex = lifeStages.findIndex(stage => stage.age === currentAge);
+            if (currentIndex < lifeStages.length - 1) {
+              setCurrentAge(lifeStages[currentIndex + 1].age);
+            }
+          }}
+          variant="outline"
+          className="text-white border-white/50 hover:bg-white/20"
+          disabled={currentAge === lifeStages[lifeStages.length - 1].age}
+        >
+          Next Year
+        </Button>
       </div>
 
       {/* Comprehensive Life Details */}
@@ -782,11 +823,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
       {showDecisionModal && currentDecision && (
         <LifeDecisionModal
           decision={currentDecision}
-          onDecisionMade={(decisionId) => {
-            console.log(`Decision made: ${decisionId}`);
-            setShowDecisionModal(false);
-            setCurrentDecision(null);
-          }}
+          onDecisionMade={handleDecisionMade}
           onClose={() => setShowDecisionModal(false)}
         />
       )}
