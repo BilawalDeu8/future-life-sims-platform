@@ -1,9 +1,11 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Play, Pause, RotateCcw, Bookmark, Share2, ZoomIn, ZoomOut, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import YearNode from "@/components/timeline/YearNode";
+import VisualYearNode from "@/components/timeline/VisualYearNode";
 import LifeDecisionModal from "@/components/timeline/LifeDecisionModal";
 import TimelineControls from "@/components/timeline/TimelineControls";
 import RealWorldDataDisplay from "@/components/data/RealWorldDataDisplay";
