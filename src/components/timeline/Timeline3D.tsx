@@ -1,28 +1,26 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane, Heart, Trophy } from "lucide-react";
+import { ArrowLeft, Home, Building, Car, MapPin, Play, Pause, ZoomIn, ZoomOut, Users, Plane, Heart, Trophy, Gamepad2 } from "lucide-react";
+import Interactive3DWorld from './Interactive3DWorld';
 
 interface LifeStage {
   age: number;
   year: number;
   home: {
     type: 'studio' | 'apartment' | 'house' | 'mansion';
-    size: number;
-    position: [number, number, number];
+    size: [number, number, number];
     color: string;
   };
   workplace: {
     type: 'startup' | 'corporate' | 'remote' | 'enterprise';
-    position: [number, number, number];
     height: number;
     color: string;
   };
   vehicle: {
     type: 'none' | 'bike' | 'car' | 'luxury' | 'electric';
-    position: [number, number, number];
     color: string;
   };
   lifestyle: {
@@ -33,6 +31,7 @@ interface LifeStage {
   };
   financials: {
     income: number;
+    expenses: number;
     savings: number;
     netWorth: number;
   };
@@ -57,8 +56,8 @@ interface Timeline3DProps {
 const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
   const [currentAge, setCurrentAge] = useState(22);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [cameraZoom, setCameraZoom] = useState(1);
-  const [selectedStage, setSelectedStage] = useState<LifeStage | null>(null);
+  const [selectedBuilding, setSelectedBuilding] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<'street' | 'city'>('city');
 
   // Get user's location from localStorage
   const getUserLocation = () => {
@@ -78,7 +77,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
     const stages: LifeStage[] = [];
     const ages = [22, 25, 28, 32, 35, 40, 45, 50];
     
-    // Location-specific data
+    // Location-specific data based on user's actual location
     const locationData = isIndianLocation ? {
       baseIncome: careerPath.id === 'tech-bangalore' ? 1200000 : // ₹12L
                   careerPath.id === 'finance-mumbai' ? 1500000 : // ₹15L
@@ -87,8 +86,8 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
                   careerPath.id === 'remote-anywhere' ? 2000000 : // ₹20L
                   1000000, // ₹10L default
       currency: '₹',
-      cities: ['Bangalore', 'Mumbai', 'Delhi NCR', 'Pune', 'Hyderabad', 'Chennai'],
-      neighborhoods: ['Koramangala', 'Bandra', 'Gurgaon', 'Koregaon Park', 'HITEC City', 'Anna Nagar']
+      cities: ['Bangalore', 'Mumbai', 'Pune', 'Hyderabad', 'Chennai', 'Delhi NCR'],
+      neighborhoods: ['Koramangala', 'Bandra', 'Koregaon Park', 'HITEC City', 'Anna Nagar', 'Gurgaon']
     } : {
       baseIncome: careerPath.id === 'tech-startup' ? 95000 :
                   careerPath.id === 'corporate-finance' ? 120000 :
@@ -103,6 +102,8 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
       const progressFactor = index / (ages.length - 1);
       
       const currentIncome = locationData.baseIncome + (yearOffset * (isIndianLocation ? 200000 : 8000) * (1 + progressFactor));
+      
+      // Use specific city from user's location data
       const cityIndex = Math.min(Math.floor(progressFactor * locationData.cities.length), locationData.cities.length - 1);
       const currentLocation = locationData.cities[cityIndex];
       
@@ -113,26 +114,25 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           type: progressFactor < 0.2 ? 'studio' : 
                 progressFactor < 0.5 ? 'apartment' : 
                 progressFactor < 0.8 ? 'house' : 'mansion',
-          size: 1 + progressFactor * 2,
-          position: [0, 0, 0],
+          size: progressFactor < 0.2 ? [2, 2, 2] : 
+                progressFactor < 0.5 ? [3, 3, 3] : 
+                progressFactor < 0.8 ? [4, 3, 4] : [6, 4, 6],
           color: progressFactor < 0.3 ? '#8B4513' : 
                  progressFactor < 0.6 ? '#DEB887' : '#F5DEB3'
         },
         workplace: {
-          type: careerPath.id.includes('tech') ? 'startup' :
-                 careerPath.id.includes('finance') ? 'corporate' :
-                 careerPath.id.includes('remote') ? 'remote' : 'enterprise',
-          position: [5, 0, 3],
+          type: careerPath.id?.includes('tech') ? 'startup' :
+                 careerPath.id?.includes('finance') ? 'corporate' :
+                 careerPath.id?.includes('remote') ? 'remote' : 'enterprise',
           height: 2 + progressFactor * 4,
-          color: careerPath.id.includes('tech') ? '#4A90E2' :
-                 careerPath.id.includes('finance') ? '#2C3E50' : '#7B68EE'
+          color: careerPath.id?.includes('tech') ? '#4A90E2' :
+                 careerPath.id?.includes('finance') ? '#2C3E50' : '#7B68EE'
         },
         vehicle: {
           type: progressFactor < 0.2 ? 'none' :
                 progressFactor < 0.4 ? 'bike' :
                 progressFactor < 0.7 ? 'car' :
                 progressFactor < 0.9 ? 'luxury' : 'electric',
-          position: [2, 0, -2],
           color: progressFactor < 0.5 ? '#FF4444' : 
                  progressFactor < 0.8 ? '#4444FF' : '#FFD700'
         },
@@ -144,15 +144,16 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
         },
         financials: {
           income: currentIncome,
-          savings: currentIncome * 0.15 * yearOffset,
-          netWorth: currentIncome * 0.25 * yearOffset
+          expenses: Math.floor(currentIncome * 0.7),
+          savings: Math.max(0, currentIncome * 0.15 * yearOffset),
+          netWorth: Math.max(0, currentIncome * 0.25 * yearOffset)
         },
         career: {
-          title: careerPath.career,
+          title: careerPath.career || 'Professional',
           level: progressFactor < 0.3 ? 'Junior' :
                  progressFactor < 0.6 ? 'Mid-level' :
                  progressFactor < 0.8 ? 'Senior' : 'Executive',
-          satisfaction: careerPath.workLifeBalance
+          satisfaction: careerPath.workLifeBalance || 70
         },
         environment: {
           neighborhood: progressFactor < 0.3 ? 'urban' :
@@ -161,7 +162,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           skyColor: progressFactor < 0.5 ? '#87CEEB' : '#FFB6C1',
           ambientColor: '#FFFFFF'
         },
-        location: currentLocation
+        location: currentLocation // Now uses proper location-specific cities
       });
     });
     
@@ -196,6 +197,10 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
     return `$${(amount / 1000).toFixed(0)}k`;
   };
 
+  const handleBuildingClick = (building: any) => {
+    setSelectedBuilding(building);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
       {/* Header */}
@@ -212,7 +217,7 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
             </Button>
             
             <div className="text-center">
-              <h1 className="text-2xl font-bold">3D Life Timeline</h1>
+              <h1 className="text-2xl font-bold">3D Life World</h1>
               <p className="text-blue-200">Age {currentAge} • {careerPath.title}</p>
               <p className="text-sm text-purple-200">{currentStage.career.level} • {formatCurrency(currentStage.financials.income)}/year</p>
               <p className="text-xs text-green-200">{currentStage.location}</p>
@@ -230,153 +235,39 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCameraZoom(prev => Math.max(0.5, prev - 0.2))}
-                className="text-white border-orange-400 hover:bg-orange-500/30 hover:text-white bg-orange-500/20"
+                onClick={() => setViewMode(viewMode === 'city' ? 'street' : 'city')}
+                className="text-white border-blue-400 hover:bg-blue-500/30 hover:text-white bg-blue-500/20"
               >
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCameraZoom(prev => Math.min(3, prev + 0.2))}
-                className="text-white border-orange-400 hover:bg-orange-500/30 hover:text-white bg-orange-500/20"
-              >
-                <ZoomIn className="h-4 w-4" />
+                <Gamepad2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3D Visualization Area - Enhanced with interactive models */}
-      <div className="relative h-[70vh] bg-gradient-to-b from-blue-900/30 to-purple-900/30 overflow-hidden">
-        {/* Sky/Environment Background */}
-        <div 
-          className="absolute inset-0 transition-colors duration-1000"
-          style={{ backgroundColor: currentStage.environment.skyColor + '20' }}
-        />
-        
-        {/* 3D Scene Container */}
-        <div className="relative h-full flex items-center justify-center perspective-1000">
-          {/* Neighborhood Grid */}
-          <div className="absolute inset-0 grid grid-cols-8 grid-rows-6 gap-2 p-8 opacity-20">
-            {Array.from({ length: 48 }).map((_, i) => (
-              <div key={i} className="bg-white/10 rounded border border-white/20" />
-            ))}
+      {/* 3D Interactive World */}
+      <div className="relative h-[70vh] bg-gradient-to-b from-blue-900/30 to-purple-900/30">
+        <Suspense fallback={
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
+              <p>Loading your 3D world...</p>
+            </div>
           </div>
+        }>
+          <Interactive3DWorld
+            currentAge={currentAge}
+            lifeStage={currentStage}
+            onBuildingClick={handleBuildingClick}
+            userLocation={userLocation}
+          />
+        </Suspense>
 
-          {/* Interactive Life Elements */}
-          <div 
-            className="relative transform transition-all duration-1000"
-            style={{ 
-              transform: `scale(${cameraZoom}) rotateX(10deg) rotateY(${currentAge * 2}deg)`,
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            {/* Home Model */}
-            <div 
-              className="absolute transform-gpu transition-all duration-1000 cursor-pointer hover:scale-110"
-              style={{ 
-                left: '200px', 
-                top: '100px',
-                transform: `translateZ(${currentStage.home.size * 20}px)`,
-                filter: `hue-rotate(${currentAge * 5}deg)`
-              }}
-              onClick={() => setSelectedStage(currentStage)}
-            >
-              <div className="relative">
-                <div 
-                  className="w-24 h-24 rounded-lg border-2 border-white/40 flex items-center justify-center transition-colors duration-500 shadow-2xl backdrop-blur-sm"
-                  style={{ backgroundColor: currentStage.home.color + '80' }}
-                >
-                  <Home className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-white bg-black/60 px-2 py-1 rounded">
-                  {currentStage.home.type.toUpperCase()}
-                </div>
-              </div>
-            </div>
-
-            {/* Workplace Model */}
-            <div 
-              className="absolute transform-gpu transition-all duration-1000 cursor-pointer hover:scale-110"
-              style={{ 
-                left: '350px', 
-                top: '150px',
-                transform: `translateZ(${currentStage.workplace.height * 10}px)`,
-                filter: `hue-rotate(${currentAge * 3}deg)`
-              }}
-              onClick={() => setSelectedStage(currentStage)}
-            >
-              <div className="relative">
-                <div 
-                  className="w-20 h-32 rounded border-2 border-white/40 flex items-center justify-center transition-colors duration-500 shadow-2xl backdrop-blur-sm"
-                  style={{ 
-                    backgroundColor: currentStage.workplace.color + '80',
-                    height: `${currentStage.workplace.height * 8}px`
-                  }}
-                >
-                  <Building className="h-6 w-6 text-white" />
-                </div>
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-white bg-black/60 px-2 py-1 rounded whitespace-nowrap">
-                  {currentStage.workplace.type.toUpperCase()}
-                </div>
-              </div>
-            </div>
-
-            {/* Vehicle Model */}
-            {currentStage.vehicle.type !== 'none' && (
-              <div 
-                className="absolute transform-gpu transition-all duration-1000 cursor-pointer hover:scale-110"
-                style={{ 
-                  left: '120px', 
-                  top: '200px',
-                  transform: `translateZ(20px)`,
-                  filter: `hue-rotate(${currentAge * 4}deg)`
-                }}
-                onClick={() => setSelectedStage(currentStage)}
-              >
-                <div className="relative">
-                  <div 
-                    className="w-16 h-12 rounded border-2 border-white/40 flex items-center justify-center transition-colors duration-500 shadow-2xl backdrop-blur-sm"
-                    style={{ backgroundColor: currentStage.vehicle.color + '80' }}
-                  >
-                    <Car className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-white bg-black/60 px-2 py-1 rounded">
-                    {currentStage.vehicle.type.toUpperCase()}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Lifestyle Elements */}
-            {currentStage.lifestyle.gym && (
-              <div className="absolute w-8 h-8 bg-red-500/60 rounded border border-white/40 flex items-center justify-center" style={{ left: '300px', top: '80px' }}>
-                <Trophy className="h-4 w-4 text-white" />
-              </div>
-            )}
-
-            {currentStage.lifestyle.travel && (
-              <div className="absolute w-8 h-8 bg-blue-500/60 rounded border border-white/40 flex items-center justify-center" style={{ left: '400px', top: '120px' }}>
-                <Plane className="h-4 w-4 text-white" />
-              </div>
-            )}
-
-            {currentStage.lifestyle.family && (
-              <div className="absolute w-8 h-8 bg-pink-500/60 rounded border border-white/40 flex items-center justify-center" style={{ left: '250px', top: '250px' }}>
-                <Heart className="h-4 w-4 text-white" />
-              </div>
-            )}
-          </div>
-
-          {/* Location Badge */}
-          <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
-            <div className="flex items-center space-x-2">
-              <MapPin className="h-4 w-4 text-green-400" />
-              <span className="text-sm font-medium">{currentStage.location}</span>
-            </div>
-            <div className="text-xs text-gray-300">{currentStage.environment.neighborhood} area</div>
+        {/* View Mode Indicator */}
+        <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
+          <div className="flex items-center space-x-2">
+            <MapPin className="h-4 w-4 text-green-400" />
+            <span className="text-sm font-medium">{viewMode === 'city' ? 'City View' : 'Street View'}</span>
           </div>
         </div>
       </div>
@@ -405,6 +296,48 @@ const Timeline3D: React.FC<Timeline3DProps> = ({ careerPath, onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Building Detail Panel */}
+      {selectedBuilding && (
+        <Card className="fixed bottom-8 right-8 w-80 bg-black/80 backdrop-blur-sm border-white/20">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold text-white capitalize">{selectedBuilding.type}</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedBuilding(null)}
+                className="text-white hover:bg-white/20"
+              >
+                ×
+              </Button>
+            </div>
+            
+            {selectedBuilding.type === 'home' && (
+              <div className="space-y-2 text-sm text-gray-300">
+                <p><strong>Type:</strong> {currentStage.home.type.toUpperCase()}</p>
+                <p><strong>Neighborhood:</strong> {currentStage.environment.neighborhood}</p>
+                <p><strong>Location:</strong> {currentStage.location}</p>
+              </div>
+            )}
+            
+            {selectedBuilding.type === 'workplace' && (
+              <div className="space-y-2 text-sm text-gray-300">
+                <p><strong>Position:</strong> {currentStage.career.level}</p>
+                <p><strong>Company:</strong> {currentStage.workplace.type.toUpperCase()}</p>
+                <p><strong>Salary:</strong> {formatCurrency(currentStage.financials.income)}/year</p>
+              </div>
+            )}
+            
+            {(selectedBuilding.type === 'gym' || selectedBuilding.type === 'travel') && (
+              <div className="space-y-2 text-sm text-gray-300">
+                <p><strong>Facility:</strong> {selectedBuilding.data.name}</p>
+                <p><strong>Available:</strong> {currentStage.lifestyle[selectedBuilding.type as keyof typeof currentStage.lifestyle] ? 'Yes' : 'No'}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Enhanced Details Panel */}
       <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-60 overflow-y-auto">

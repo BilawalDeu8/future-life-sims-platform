@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,93 +23,6 @@ interface LifeScenario {
   livingSpace: string;
   socialLife: string;
 }
-
-const scenarios: LifeScenario[] = [
-  {
-    id: "tech-startup",
-    title: "Tech Innovator",
-    career: "Software Developer at Startup",
-    location: "San Francisco, CA",
-    salaryRange: "$95k - $140k",
-    workLifeBalance: 65,
-    stressLevel: 75,
-    lifestyle: "Fast-paced urban professional",
-    image: "photo-1581091226825-a6a2a5aee158",
-    description: "Living the Silicon Valley dream with cutting-edge technology and high growth potential",
-    livingSpace: "Modern studio apartment in SOMA",
-    socialLife: "Tech meetups, rooftop bars, weekend hackathons"
-  },
-  {
-    id: "creative-agency",
-    title: "Creative Director",
-    career: "Marketing Creative in Agency",
-    location: "Austin, TX",
-    salaryRange: "$75k - $95k",
-    workLifeBalance: 70,
-    stressLevel: 60,
-    lifestyle: "Artistic urban bohemian",
-    image: "photo-1487958449943-2429e8be8625",
-    description: "Channel your creativity while building brands that matter",
-    livingSpace: "Converted loft in the arts district",
-    socialLife: "Art galleries, live music, creative collaborations"
-  },
-  {
-    id: "corporate-finance",
-    title: "Financial Analyst",
-    career: "Investment Banking Analyst",
-    location: "New York, NY",
-    salaryRange: "$120k - $180k",
-    workLifeBalance: 40,
-    stressLevel: 85,
-    lifestyle: "High-powered corporate professional",
-    image: "photo-1470071459604-3b5ec3a7fe05",
-    description: "Fast track to financial success in the heart of global finance",
-    livingSpace: "Luxury high-rise apartment in Manhattan",
-    socialLife: "Corporate events, fine dining, exclusive networking"
-  },
-  {
-    id: "remote-consultant",
-    title: "Digital Nomad",
-    career: "Remote Strategy Consultant",
-    location: "Location Independent",
-    salaryRange: "$80k - $120k",
-    workLifeBalance: 85,
-    stressLevel: 45,
-    lifestyle: "Freedom-focused traveler",
-    image: "photo-1500673922987-e212871fec22",
-    description: "Work from anywhere while building a global client base",
-    livingSpace: "Co-living spaces and Airbnbs worldwide",
-    socialLife: "Digital nomad communities, local cultural experiences"
-  },
-  {
-    id: "healthcare-professional",
-    title: "Healthcare Hero",
-    career: "Registered Nurse",
-    location: "Denver, CO",
-    salaryRange: "$70k - $85k",
-    workLifeBalance: 75,
-    stressLevel: 70,
-    lifestyle: "Purpose-driven community member",
-    image: "photo-1523712999610-f77fbcfc3843",
-    description: "Make a real difference in people's lives every day",
-    livingSpace: "Cozy townhouse near outdoor recreation",
-    socialLife: "Healthcare community, outdoor adventures, volunteer work"
-  },
-  {
-    id: "education-leader",
-    title: "Education Innovator",
-    career: "High School Teacher & Coach",
-    location: "Suburban Minneapolis, MN",
-    salaryRange: "$55k - $75k",
-    workLifeBalance: 80,
-    stressLevel: 55,
-    lifestyle: "Community-centered educator",
-    image: "photo-1721322800607-8c38375eef04",
-    description: "Shape the next generation while enjoying work-life balance",
-    livingSpace: "Family-friendly suburban home",
-    socialLife: "School events, community sports, family gatherings"
-  }
-];
 
 const Simulation = () => {
   const navigate = useNavigate();
@@ -233,7 +147,76 @@ const Simulation = () => {
         livingSpace: "Modern studio apartment in SOMA",
         socialLife: "Tech meetups, rooftop bars, weekend hackathons"
       },
-      // ... keep existing code (other US scenarios)
+      {
+        id: "creative-agency",
+        title: "Creative Director",
+        career: "Marketing Creative in Agency",
+        location: "Austin, TX",
+        salaryRange: "$75k - $95k",
+        workLifeBalance: 70,
+        stressLevel: 60,
+        lifestyle: "Artistic urban bohemian",
+        image: "photo-1487958449943-2429e8be8625",
+        description: "Channel your creativity while building brands that matter",
+        livingSpace: "Converted loft in the arts district",
+        socialLife: "Art galleries, live music, creative collaborations"
+      },
+      {
+        id: "corporate-finance",
+        title: "Financial Analyst",
+        career: "Investment Banking Analyst",
+        location: "New York, NY",
+        salaryRange: "$120k - $180k",
+        workLifeBalance: 40,
+        stressLevel: 85,
+        lifestyle: "High-powered corporate professional",
+        image: "photo-1470071459604-3b5ec3a7fe05",
+        description: "Fast track to financial success in the heart of global finance",
+        livingSpace: "Luxury high-rise apartment in Manhattan",
+        socialLife: "Corporate events, fine dining, exclusive networking"
+      },
+      {
+        id: "remote-consultant",
+        title: "Digital Nomad",
+        career: "Remote Strategy Consultant",
+        location: "Location Independent",
+        salaryRange: "$80k - $120k",
+        workLifeBalance: 85,
+        stressLevel: 45,
+        lifestyle: "Freedom-focused traveler",
+        image: "photo-1500673922987-e212871fec22",
+        description: "Work from anywhere while building a global client base",
+        livingSpace: "Co-living spaces and Airbnbs worldwide",
+        socialLife: "Digital nomad communities, local cultural experiences"
+      },
+      {
+        id: "healthcare-professional",
+        title: "Healthcare Hero",
+        career: "Registered Nurse",
+        location: "Denver, CO",
+        salaryRange: "$70k - $85k",
+        workLifeBalance: 75,
+        stressLevel: 70,
+        lifestyle: "Purpose-driven community member",
+        image: "photo-1523712999610-f77fbcfc3843",
+        description: "Make a real difference in people's lives every day",
+        livingSpace: "Cozy townhouse near outdoor recreation",
+        socialLife: "Healthcare community, outdoor adventures, volunteer work"
+      },
+      {
+        id: "education-leader",
+        title: "Education Innovator",
+        career: "High School Teacher & Coach",
+        location: "Suburban Minneapolis, MN",
+        salaryRange: "$55k - $75k",
+        workLifeBalance: 80,
+        stressLevel: 55,
+        lifestyle: "Community-centered educator",
+        image: "photo-1721322800607-8c38375eef04",
+        description: "Shape the next generation while enjoying work-life balance",
+        livingSpace: "Family-friendly suburban home",
+        socialLife: "School events, community sports, family gatherings"
+      }
     ];
 
     setScenarios(baseScenarios);
