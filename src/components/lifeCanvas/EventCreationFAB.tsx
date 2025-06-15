@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Plus, Home, Briefcase, Heart, DollarSign, Plane, Award, Activity, User } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { LifeEvent, EventCategory } from '@/types/lifeCanvas';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -58,32 +58,35 @@ const EventCreationFAB: React.FC<EventCreationFABProps> = ({ onEventCreate, curr
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute bottom-16 right-0 transform -translate-x-1/2 grid grid-cols-2 gap-2 p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 max-w-[280px]"
+            className="absolute bottom-16 right-0 w-80 p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
+            style={{ transform: 'translateX(-50%)' }}
           >
-            {eventCategories.map((category, index) => (
-              <motion.button
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: 0,
-                  transition: { delay: index * 0.05 }
-                }}
-                exit={{ opacity: 0, y: 20 }}
-                onClick={() => handleCategorySelect(category)}
-                className="flex flex-col items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group min-w-[120px]"
-              >
-                <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">
-                  {category.icon}
-                </span>
-                <span className="text-xs text-white font-medium text-center">
-                  {category.name}
-                </span>
-                <span className="text-xs text-white/60 text-center mt-1 leading-tight">
-                  {category.description}
-                </span>
-              </motion.button>
-            ))}
+            <div className="grid grid-cols-2 gap-3">
+              {eventCategories.map((category, index) => (
+                <motion.button
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0,
+                    transition: { delay: index * 0.05 }
+                  }}
+                  exit={{ opacity: 0, y: 20 }}
+                  onClick={() => handleCategorySelect(category)}
+                  className="flex flex-col items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+                >
+                  <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">
+                    {category.icon}
+                  </span>
+                  <span className="text-xs text-white font-medium text-center">
+                    {category.name}
+                  </span>
+                  <span className="text-xs text-white/60 text-center mt-1 leading-tight">
+                    {category.description}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
