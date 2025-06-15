@@ -34,7 +34,6 @@ const LifeDecisionModal: React.FC<LifeDecisionModalProps> = ({
   onClose
 }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [showConsequences, setShowConsequences] = useState(false);
 
   const handleConfirmDecision = () => {
     if (selectedOption !== null) {
@@ -55,14 +54,14 @@ const LifeDecisionModal: React.FC<LifeDecisionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <Card className="bg-gray-900/95 border-purple-500/50 max-w-2xl w-full mx-4 animate-scale-in">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <Card className="bg-gray-900/98 border-purple-500/50 max-w-2xl w-full mx-4 animate-scale-in shadow-2xl">
         <CardHeader className="relative">
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="absolute right-2 top-2 text-gray-400 hover:text-white"
+            className="absolute right-2 top-2 text-gray-400 hover:text-white z-10"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -74,7 +73,7 @@ const LifeDecisionModal: React.FC<LifeDecisionModalProps> = ({
             </Badge>
           </div>
           
-          <CardTitle className="text-2xl text-white">{decision.title}</CardTitle>
+          <CardTitle className="text-2xl text-white pr-8">{decision.title}</CardTitle>
           <p className="text-gray-300">{decision.description}</p>
           
           <div className="flex items-center space-x-2 mt-2">

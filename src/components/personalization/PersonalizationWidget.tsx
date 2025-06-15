@@ -4,129 +4,115 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Target, MapPin, TrendingUp } from "lucide-react";
+import { X, Settings, Brain, Target } from "lucide-react";
 import { PersonalizationProfile } from '@/types/dataIntegration';
-import { usePersonalization } from '@/hooks/usePersonalization';
 
 interface PersonalizationWidgetProps {
-  userId?: string;
-  isExpanded?: boolean;
-  onToggleExpanded?: () => void;
+  profile: PersonalizationProfile | null;
+  onUpdateProfile: (updates: Partial<PersonalizationProfile>) => void;
+  onClose: () => void;
 }
 
 const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
-  userId,
-  isExpanded = false,
-  onToggleExpanded
+  profile,
+  onUpdateProfile,
+  onClose
 }) => {
-  const { profile, updateProfile, isLoading } = usePersonalization(userId);
-  const [localProfile, setLocalProfile] = useState<Partial<PersonalizationProfile>>(profile || {});
+  const [localProfile, setLocalProfile] = useState(profile || {
+    workLifeBalanceWeight: 50,
+    salaryWeight: 30,
+    growthWeight: 15,
+    stabilityWeight: 5,
+    riskTolerance: 'medium' as const,
+    preferredLocations: [],
+    careerInterests: []
+  });
 
-  const handleSaveChanges = async () => {
-    await updateProfile(localProfile);
+  const handleWeightChange = (key: string, value: number[]) => {
+    setLocalProfile(prev => ({ ...prev, [key]: value[0] }));
   };
 
-  if (!profile) {
-    return (
-      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-        <CardContent className="p-6 text-center">
-          <Settings className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-          <p className="text-gray-300">Personalization not available</p>
-        </CardContent>
-      </Card>
-    );
-  }
+  const handleSave = () => {
+    onUpdateProfile(localProfile);
+    onClose();
+  };
 
-  if (!isExpanded) {
-    return (
-      <Card className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border-white/20 cursor-pointer" onClick={onToggleExpanded}>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Target className="h-5 w-5 text-purple-400 mr-2" />
-              <span className="text-white font-medium">Personalization</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Badge variant="outline" className="border-purple-400 text-purple-300">
-                Level {Math.floor(profile.engagementLevel / 10)}
-              </Badge>
-              <Settings className="h-4 w-4 text-purple-400" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  const addLocation = (location: string) => {
+    if (location && !localProfile.preferredLocations?.includes(location)) {
+      setLocalProfile(prev => ({
+        ...prev,
+        preferredLocations: [...(prev.preferredLocations || []), location]
+      }));
+    }
+  };
+
+  const removeLocation = (location: string) => {
+    setLocalProfile(prev => ({
+      ...prev,
+      preferredLocations: prev.preferredLocations?.filter(l => l !== location) || []
+    }));
+  };
+
+  const popularLocations = ["San Francisco", "New York", "Austin", "Seattle", "Denver", "Remote"];
+  const careerOptions = ["Technology", "Finance", "Creative", "Healthcare", "Education", "Consulting"];
 
   return (
-    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between text-white">
-          <div className="flex items-center">
-            <Target className="h-5 w-5 mr-2 text-purple-400" />
-            Personalization Settings
-          </div>
-          <Button variant="ghost" size="sm" onClick={onToggleExpanded}>
-            <Settings className="h-4 w-4" />
-          </Button>
+    <Card className="bg-black/90 backdrop-blur-sm border-purple-500/50 text-white">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <CardTitle className="flex items-center text-lg">
+          <Brain className="h-5 w-5 mr-2 text-purple-400" />
+          AI Personalization
         </CardTitle>
+        <Button variant="ghost" size="sm" onClick={onClose}>
+          <X className="h-4 w-4" />
+        </Button>
       </CardHeader>
+      
       <CardContent className="space-y-6">
         {/* Priority Weights */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-semibold text-white">What matters most to you?</h4>
+        <div>
+          <h3 className="text-sm font-semibold text-purple-300 mb-3 flex items-center">
+            <Target className="h-4 w-4 mr-2" />
+            What matters most to you?
+          </h3>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-blue-200">Work-Life Balance</span>
-                <span className="text-white">{localProfile.workLifeBalanceWeight || profile.workLifeBalanceWeight}%</span>
+              <div className="flex justify-between text-xs mb-2">
+                <span>Work-Life Balance</span>
+                <span>{localProfile.workLifeBalanceWeight}%</span>
               </div>
               <Slider
-                value={[localProfile.workLifeBalanceWeight || profile.workLifeBalanceWeight]}
-                onValueChange={(value) => setLocalProfile(prev => ({ ...prev, workLifeBalanceWeight: value[0] }))}
+                value={[localProfile.workLifeBalanceWeight || 50]}
+                onValueChange={(value) => handleWeightChange('workLifeBalanceWeight', value)}
                 max={100}
                 step={5}
                 className="w-full"
               />
             </div>
-
+            
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-green-200">Salary Potential</span>
-                <span className="text-white">{localProfile.salaryWeight || profile.salaryWeight}%</span>
+              <div className="flex justify-between text-xs mb-2">
+                <span>Salary Growth</span>
+                <span>{localProfile.salaryWeight}%</span>
               </div>
               <Slider
-                value={[localProfile.salaryWeight || profile.salaryWeight]}
-                onValueChange={(value) => setLocalProfile(prev => ({ ...prev, salaryWeight: value[0] }))}
+                value={[localProfile.salaryWeight || 30]}
+                onValueChange={(value) => handleWeightChange('salaryWeight', value)}
                 max={100}
                 step={5}
                 className="w-full"
               />
             </div>
-
+            
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-purple-200">Growth Opportunities</span>
-                <span className="text-white">{localProfile.growthWeight || profile.growthWeight}%</span>
+              <div className="flex justify-between text-xs mb-2">
+                <span>Career Growth</span>
+                <span>{localProfile.growthWeight}%</span>
               </div>
               <Slider
-                value={[localProfile.growthWeight || profile.growthWeight]}
-                onValueChange={(value) => setLocalProfile(prev => ({ ...prev, growthWeight: value[0] }))}
-                max={100}
-                step={5}
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-yellow-200">Job Security</span>
-                <span className="text-white">{localProfile.stabilityWeight || profile.stabilityWeight}%</span>
-              </div>
-              <Slider
-                value={[localProfile.stabilityWeight || profile.stabilityWeight]}
-                onValueChange={(value) => setLocalProfile(prev => ({ ...prev, stabilityWeight: value[0] }))}
+                value={[localProfile.growthWeight || 15]}
+                onValueChange={(value) => handleWeightChange('growthWeight', value)}
                 max={100}
                 step={5}
                 className="w-full"
@@ -137,22 +123,15 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
 
         {/* Risk Tolerance */}
         <div>
-          <h4 className="text-lg font-semibold text-white mb-3">Risk Tolerance</h4>
+          <h3 className="text-sm font-semibold text-blue-300 mb-3">Risk Tolerance</h3>
           <div className="flex space-x-2">
-            {['low', 'medium', 'high'].map((risk) => (
+            {(['low', 'medium', 'high'] as const).map((risk) => (
               <Button
                 key={risk}
-                variant={
-                  (localProfile.riskTolerance || profile.riskTolerance) === risk 
-                    ? "default" 
-                    : "outline"
-                }
-                onClick={() => setLocalProfile(prev => ({ ...prev, riskTolerance: risk as any }))}
-                className={
-                  (localProfile.riskTolerance || profile.riskTolerance) === risk 
-                    ? "bg-purple-600" 
-                    : "border-white/30 text-white hover:bg-white/10"
-                }
+                variant={localProfile.riskTolerance === risk ? "default" : "outline"}
+                size="sm"
+                onClick={() => setLocalProfile(prev => ({ ...prev, riskTolerance: risk }))}
+                className="flex-1 text-xs"
               >
                 {risk.charAt(0).toUpperCase() + risk.slice(1)}
               </Button>
@@ -160,28 +139,88 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
           </div>
         </div>
 
-        {/* Engagement Stats */}
-        <div className="bg-white/5 rounded-lg p-4">
-          <h4 className="text-lg font-semibold text-white mb-3">Your Journey</h4>
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-purple-400">{profile.engagementLevel}</div>
-              <div className="text-sm text-gray-300">Engagement Score</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-blue-400">{profile.completedScenarios.length}</div>
-              <div className="text-sm text-gray-300">Scenarios Explored</div>
-            </div>
+        {/* Preferred Locations */}
+        <div>
+          <h3 className="text-sm font-semibold text-green-300 mb-3">Preferred Locations</h3>
+          <div className="flex flex-wrap gap-1 mb-2">
+            {localProfile.preferredLocations?.map((location) => (
+              <Badge
+                key={location}
+                variant="secondary"
+                className="text-xs cursor-pointer hover:bg-red-500/20"
+                onClick={() => removeLocation(location)}
+              >
+                {location} ×
+              </Badge>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {popularLocations
+              .filter(loc => !localProfile.preferredLocations?.includes(loc))
+              .map((location) => (
+                <Button
+                  key={location}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addLocation(location)}
+                  className="text-xs h-7"
+                >
+                  + {location}
+                </Button>
+              ))}
           </div>
         </div>
 
-        <Button 
-          onClick={handleSaveChanges}
-          disabled={isLoading}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-        >
-          {isLoading ? 'Saving...' : 'Save Preferences'}
-        </Button>
+        {/* Career Interests */}
+        <div>
+          <h3 className="text-sm font-semibold text-pink-300 mb-3">Career Interests</h3>
+          <div className="flex flex-wrap gap-1">
+            {careerOptions.map((career) => (
+              <Button
+                key={career}
+                variant={localProfile.careerInterests?.includes(career) ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  const interests = localProfile.careerInterests || [];
+                  const updated = interests.includes(career)
+                    ? interests.filter(c => c !== career)
+                    : [...interests, career];
+                  setLocalProfile(prev => ({ ...prev, careerInterests: updated }));
+                }}
+                className="text-xs h-7"
+              >
+                {career}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Engagement Level Display */}
+        {profile?.engagementLevel !== undefined && (
+          <div>
+            <h3 className="text-sm font-semibold text-yellow-300 mb-2">Engagement Level</h3>
+            <div className="w-full bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${profile.engagementLevel}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              {profile.engagementLevel < 20 ? 'Getting Started' :
+               profile.engagementLevel < 50 ? 'Active Explorer' :
+               profile.engagementLevel < 80 ? 'Engaged User' : 'Power User'}
+            </p>
+          </div>
+        )}
+
+        <div className="flex space-x-2 pt-2">
+          <Button variant="outline" onClick={onClose} className="flex-1">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} className="flex-1 bg-purple-600 hover:bg-purple-700">
+            Save Preferences
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 import YearNode from "@/components/timeline/YearNode";
 import LifeDecisionModal from "@/components/timeline/LifeDecisionModal";
 import TimelineControls from "@/components/timeline/TimelineControls";
+import RealWorldDataDisplay from "@/components/data/RealWorldDataDisplay";
+import PersonalizationWidget from "@/components/personalization/PersonalizationWidget";
+import { usePersonalization } from "@/hooks/usePersonalization";
+import { useRealWorldData } from "@/hooks/useRealWorldData";
 
 interface TimelineYear {
   year: number;
@@ -43,39 +47,62 @@ const Timeline = () => {
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [currentDecision, setCurrentDecision] = useState<any>(null);
   const [bookmarkedYears, setBookmarkedYears] = useState<number[]>([]);
+  const [showPersonalization, setShowPersonalization] = useState(false);
 
-  // Generate timeline data for 25 years
-  const generateTimelineData = (): TimelineYear[] => {
+  // Initialize personalization and real-world data hooks
+  const userId = "demo-user"; // In real app, get from auth
+  const { profile, updateProfile, trackEngagement } = usePersonalization(userId);
+  const { salaryData, costOfLivingData, jobMarketData, isLoading, fetchScenarioData } = useRealWorldData();
+
+  // Generate personalized timeline data
+  const generatePersonalizedTimelineData = (): TimelineYear[] => {
     const startYear = 2024;
-    const startAge = 22; // Assuming user starts at 22
+    const startAge = 22;
     
-    return Array.from({ length: 25 }, (_, index) => ({
-      year: startYear + index,
-      age: startAge + index,
-      isCurrentYear: startYear + index === currentYear,
-      isCompleted: startYear + index < currentYear,
-      hasDecision: [2026, 2029, 2032, 2035, 2040].includes(startYear + index),
-      lifeData: {
-        livingSituation: index < 3 ? "Shared apartment" : index < 8 ? "1BR apartment" : "House",
-        career: index < 2 ? "Junior Developer" : index < 5 ? "Software Developer" : index < 10 ? "Senior Developer" : "Tech Lead",
-        relationships: index < 3 ? "Dating" : index < 7 ? "Serious relationship" : "Married",
-        finances: {
-          income: 65000 + (index * 8000),
-          expenses: 45000 + (index * 5000),
-          savings: Math.max(0, (65000 + (index * 8000) - 45000 - (index * 5000)) * index)
-        },
-        health: {
-          stress: Math.min(100, 30 + (index * 2)),
-          fitness: Math.max(50, 80 - (index * 1.5)),
-          workLifeBalance: Math.max(40, 75 - (index * 1))
-        },
-        achievements: index === 2 ? ["First promotion"] : index === 5 ? ["Tech Lead promotion"] : [],
-        challenges: index === 3 ? ["Student loan debt"] : index === 7 ? ["Career plateau"] : []
-      }
-    }));
+    // Use personalization data to influence timeline
+    const careerWeight = profile?.salaryWeight || 30;
+    const workLifeWeight = profile?.workLifeBalanceWeight || 50;
+    
+    return Array.from({ length: 25 }, (_, index) => {
+      const year = startYear + index;
+      const baseSalary = 65000 + (index * (careerWeight > 50 ? 12000 : 8000));
+      
+      return {
+        year,
+        age: startAge + index,
+        isCurrentYear: year === currentYear,
+        isCompleted: year < currentYear,
+        hasDecision: [2026, 2029, 2032, 2035, 2040].includes(year),
+        lifeData: {
+          livingSituation: index < 3 ? "Shared apartment" : index < 8 ? "1BR apartment" : "House",
+          career: index < 2 ? "Junior Developer" : index < 5 ? "Software Developer" : index < 10 ? "Senior Developer" : "Tech Lead",
+          relationships: index < 3 ? "Dating" : index < 7 ? "Serious relationship" : "Married",
+          finances: {
+            income: baseSalary,
+            expenses: Math.floor(baseSalary * 0.7),
+            savings: Math.max(0, baseSalary * 0.15 * index)
+          },
+          health: {
+            stress: Math.min(100, 30 + (index * (workLifeWeight > 70 ? 1 : 2))),
+            fitness: Math.max(50, 80 - (index * 1.5)),
+            workLifeBalance: Math.max(40, workLifeWeight - (index * 1))
+          },
+          achievements: index === 2 ? ["First promotion"] : index === 5 ? ["Tech Lead promotion"] : [],
+          challenges: index === 3 ? ["Student loan debt"] : index === 7 ? ["Career plateau"] : []
+        }
+      };
+    });
   };
 
-  const timelineData = generateTimelineData();
+  const timelineData = generatePersonalizedTimelineData();
+
+  // Load real-world data on component mount
+  useEffect(() => {
+    fetchScenarioData("Software Developer", "San Francisco, CA");
+    if (profile) {
+      trackEngagement("timeline_view");
+    }
+  }, [profile]);
 
   const scrollToYear = (year: number) => {
     if (timelineRef.current) {
@@ -101,11 +128,25 @@ const Timeline = () => {
         title: "Major Life Decision",
         description: `At age ${yearData.age}, you face an important choice that will shape your future.`,
         options: [
-          { id: 1, text: "Take the promotion and relocate", impact: "Higher salary, new city" },
-          { id: 2, text: "Stay in current role", impact: "Stable life, slower growth" }
+          { 
+            id: 1, 
+            text: "Take the promotion and relocate", 
+            impact: "Higher salary, new city",
+            consequences: { career: 15, finances: 20, relationships: -10, happiness: 5 }
+          },
+          { 
+            id: 2, 
+            text: "Stay in current role", 
+            impact: "Stable life, slower growth",
+            consequences: { career: -5, finances: 0, relationships: 10, happiness: 10 }
+          }
         ]
       });
       setShowDecisionModal(true);
+    }
+    
+    if (profile) {
+      trackEngagement("year_click", 1);
     }
   };
 
@@ -113,7 +154,9 @@ const Timeline = () => {
     console.log('Decision made:', decisionId);
     setShowDecisionModal(false);
     setCurrentDecision(null);
-    // Here you would update the timeline based on the decision
+    if (profile) {
+      trackEngagement("decision_made", 5);
+    }
   };
 
   const toggleBookmark = (year: number) => {
@@ -151,23 +194,54 @@ const Timeline = () => {
             </Button>
             
             <div className="text-center">
-              <h1 className="text-2xl font-bold">Your Life Timeline</h1>
+              <h1 className="text-2xl font-bold">Your Personalized Timeline</h1>
               <p className="text-blue-200">Year {currentYear} • Age {22 + (currentYear - 2024)}</p>
             </div>
 
-            <TimelineControls
-              isPlaying={isPlaying}
-              onPlayPause={() => setIsPlaying(!isPlaying)}
-              zoomLevel={zoomLevel}
-              onZoomIn={() => setZoomLevel(prev => Math.min(2, prev + 0.2))}
-              onZoomOut={() => setZoomLevel(prev => Math.max(0.5, prev - 0.2))}
-              onReset={() => {
-                setCurrentYear(2024);
-                scrollToYear(2024);
-              }}
-            />
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPersonalization(!showPersonalization)}
+                className="text-white border-white/20 hover:bg-white/10"
+              >
+                Personalize
+              </Button>
+              <TimelineControls
+                isPlaying={isPlaying}
+                onPlayPause={() => setIsPlaying(!isPlaying)}
+                zoomLevel={zoomLevel}
+                onZoomIn={() => setZoomLevel(prev => Math.min(2, prev + 0.2))}
+                onZoomOut={() => setZoomLevel(prev => Math.max(0.5, prev - 0.2))}
+                onReset={() => {
+                  setCurrentYear(2024);
+                  scrollToYear(2024);
+                }}
+              />
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Personalization Panel */}
+      {showPersonalization && (
+        <div className="fixed top-20 right-4 z-30 w-80">
+          <PersonalizationWidget
+            profile={profile}
+            onUpdateProfile={updateProfile}
+            onClose={() => setShowPersonalization(false)}
+          />
+        </div>
+      )}
+
+      {/* Real-World Data Display */}
+      <div className="px-4 py-6">
+        <RealWorldDataDisplay
+          salaryData={salaryData}
+          costOfLivingData={costOfLivingData}
+          jobMarketData={jobMarketData}
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Timeline Tracks Legend */}
@@ -227,7 +301,7 @@ const Timeline = () => {
 
       {/* Year Detail Panel */}
       {selectedYear && (
-        <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-80 overflow-y-auto">
+        <Card className="fixed bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm border-white/20 max-h-80 overflow-y-auto z-10">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
@@ -259,13 +333,15 @@ const Timeline = () => {
         </Card>
       )}
 
-      {/* Decision Modal */}
+      {/* Decision Modal - Fixed positioning and z-index */}
       {showDecisionModal && currentDecision && (
-        <LifeDecisionModal
-          decision={currentDecision}
-          onDecisionMade={handleDecisionMade}
-          onClose={() => setShowDecisionModal(false)}
-        />
+        <div className="fixed inset-0 z-50">
+          <LifeDecisionModal
+            decision={currentDecision}
+            onDecisionMade={handleDecisionMade}
+            onClose={() => setShowDecisionModal(false)}
+          />
+        </div>
       )}
     </div>
   );
