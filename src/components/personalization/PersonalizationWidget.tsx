@@ -143,7 +143,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                 onClick={() => setLocalProfile(prev => ({ ...prev, riskTolerance: risk }))}
                 className={`flex-1 text-xs ${
                   localProfile.riskTolerance === risk 
-                    ? "bg-purple-600 text-white hover:bg-purple-700 border-purple-600" 
+                    ? "bg-[#8B5CF6] text-white hover:bg-[#7C3AED] border-[#8B5CF6]" 
                     : "bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
                 }`}
               >
@@ -203,7 +203,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
                 }}
                 className={`text-xs h-7 ${
                   localProfile.careerInterests?.includes(career)
-                    ? "bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                    ? "bg-[#8B5CF6] text-white hover:bg-[#7C3AED] border-[#8B5CF6]"
                     : "bg-purple-600/20 border-purple-500/50 text-purple-300 hover:bg-purple-600/30 hover:text-white hover:border-purple-400"
                 }`}
               >
@@ -241,7 +241,7 @@ const PersonalizationWidget: React.FC<PersonalizationWidgetProps> = ({
           </Button>
           <Button 
             onClick={handleSave} 
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+            className="flex-1 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white border-[#8B5CF6]"
           >
             Save Preferences
           </Button>
