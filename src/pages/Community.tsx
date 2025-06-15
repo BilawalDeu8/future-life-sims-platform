@@ -89,45 +89,45 @@ const Community = () => {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <MessageSquare className="h-5 w-5 mr-2" />
                     Quick Question
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300 text-sm mb-4">Ask the community anything about your career journey</p>
+                <CardContent className="flex-1 flex flex-col">
+                  <p className="text-gray-300 text-sm mb-4 flex-1">Ask the community anything about your career journey</p>
                   <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     Ask Question
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Video className="h-5 w-5 mr-2" />
                     Schedule Call
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300 text-sm mb-4">Book a 1-on-1 video call with a mentor</p>
+                <CardContent className="flex-1 flex flex-col">
+                  <p className="text-gray-300 text-sm mb-4 flex-1">Book a 1-on-1 video call with a mentor</p>
                   <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                     Browse Mentors
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Calendar className="h-5 w-5 mr-2" />
                     Join Event
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300 text-sm mb-4">Attend networking events and career workshops</p>
+                <CardContent className="flex-1 flex flex-col">
+                  <p className="text-gray-300 text-sm mb-4 flex-1">Attend networking events and career workshops</p>
                   <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
                     See Events
                   </Button>
