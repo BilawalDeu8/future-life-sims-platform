@@ -167,7 +167,7 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
         savings: Math.floor(currentIncome * 0.15 * yearOffset),
         achievements: progressFactor > 0.3 ? ['First promotion'] : [],
         challenges: progressFactor < 0.3 ? ['Learning curve'] : [],
-        hasDecision: [25, 30, 35].includes(age),
+        hasDecision: [24, 26, 28, 30, 32, 35, 38, 42, 45].includes(age),
         milestone: progressFactor === 0.5 ? 'First major promotion' : undefined,
         lifestyle: {
           happiness: Math.floor(60 + progressFactor * 30),
@@ -223,22 +223,174 @@ const SimpleTimeline: React.FC<TimelineProps> = ({ careerPath, onBack }) => {
 
   const handleDecisionClick = (age: number) => {
     const decisions = {
-      25: {
-        year: 2027,
-        title: "Career Crossroads",
-        description: "You've been offered a senior role at a bigger company with higher pay, but it means leaving your current team.",
+      24: {
+        year: 2026,
+        title: "Living Situation Decision",
+        description: "You've been living with roommates for 2 years. Now you have the option to get your own place or continue sharing to save money.",
         options: [
           {
             id: 1,
-            text: "Take the promotion",
-            impact: "Higher salary but more pressure",
-            consequences: { career: 20, finances: 25, relationships: -10, happiness: 5 }
+            text: "Get my own apartment",
+            impact: "More independence but higher expenses",
+            consequences: { career: 0, finances: -15, relationships: 5, happiness: 20 }
           },
           {
             id: 2,
-            text: "Stay and grow internally", 
-            impact: "Better work-life balance",
-            consequences: { career: 5, finances: 5, relationships: 15, happiness: 15 }
+            text: "Continue with roommates", 
+            impact: "Save money but less privacy",
+            consequences: { career: 0, finances: 15, relationships: 10, happiness: -5 }
+          }
+        ]
+      },
+      26: {
+        year: 2028,
+        title: "Relationship Milestone",
+        description: "You've been in a serious relationship for 2 years. Your partner is ready to move in together, but you're unsure about the timing.",
+        options: [
+          {
+            id: 1,
+            text: "Move in together",
+            impact: "Deeper commitment and shared expenses",
+            consequences: { career: -5, finances: 10, relationships: 25, happiness: 15 }
+          },
+          {
+            id: 2,
+            text: "Wait and keep dating", 
+            impact: "Maintain independence for now",
+            consequences: { career: 5, finances: -5, relationships: -10, happiness: 0 }
+          }
+        ]
+      },
+      28: {
+        year: 2030,
+        title: "Career Crossroads",
+        description: "You've been offered a senior role at a bigger company with 40% higher pay, but it means relocating to another city and leaving your social circle.",
+        options: [
+          {
+            id: 1,
+            text: "Take the promotion and relocate",
+            impact: "Career growth but social disruption",
+            consequences: { career: 25, finances: 30, relationships: -20, happiness: 0 }
+          },
+          {
+            id: 2,
+            text: "Stay and negotiate internally", 
+            impact: "Comfort zone but slower growth",
+            consequences: { career: 10, finances: 10, relationships: 15, happiness: 10 }
+          }
+        ]
+      },
+      30: {
+        year: 2032,
+        title: "Marriage & Future Planning",
+        description: "Your long-term partner has proposed. This is a major life decision that will affect your future plans, finances, and lifestyle.",
+        options: [
+          {
+            id: 1,
+            text: "Say yes and start planning wedding",
+            impact: "Commitment to shared future and goals",
+            consequences: { career: -5, finances: -10, relationships: 30, happiness: 25 }
+          },
+          {
+            id: 2,
+            text: "Ask for more time to think", 
+            impact: "Maintain current status but risk relationship",
+            consequences: { career: 5, finances: 5, relationships: -15, happiness: -10 }
+          }
+        ]
+      },
+      32: {
+        year: 2034,
+        title: "Starting a Family",
+        description: "You and your spouse are considering having your first child. This will significantly change your lifestyle and financial responsibilities.",
+        options: [
+          {
+            id: 1,
+            text: "Start trying for a baby",
+            impact: "New chapter but major responsibility",
+            consequences: { career: -10, finances: -20, relationships: 20, happiness: 25 }
+          },
+          {
+            id: 2,
+            text: "Wait a few more years", 
+            impact: "Focus on career and financial stability first",
+            consequences: { career: 15, finances: 20, relationships: -5, happiness: 0 }
+          }
+        ]
+      },
+      35: {
+        year: 2037,
+        title: "Home Ownership Decision",
+        description: "You've saved enough for a down payment on a house. It's a big financial commitment but would provide stability for your growing family.",
+        options: [
+          {
+            id: 1,
+            text: "Buy a house",
+            impact: "Financial commitment but long-term investment",
+            consequences: { career: 0, finances: -25, relationships: 15, happiness: 20 }
+          },
+          {
+            id: 2,
+            text: "Continue renting and invest the money", 
+            impact: "Financial flexibility but no property ownership",
+            consequences: { career: 5, finances: 15, relationships: -5, happiness: -5 }
+          }
+        ]
+      },
+      38: {
+        year: 2040,
+        title: "Career vs Family Balance",
+        description: "You've been offered a C-suite position that requires extensive travel and long hours, just as your children are entering school age.",
+        options: [
+          {
+            id: 1,
+            text: "Accept the executive role",
+            impact: "Career peak but family time sacrifice",
+            consequences: { career: 30, finances: 35, relationships: -20, happiness: 5 }
+          },
+          {
+            id: 2,
+            text: "Decline and focus on family", 
+            impact: "Family priority but career plateau",
+            consequences: { career: -5, finances: 0, relationships: 25, happiness: 20 }
+          }
+        ]
+      },
+      42: {
+        year: 2044,
+        title: "Midlife Health & Lifestyle",
+        description: "You're experiencing some health issues and stress from years of hard work. A doctor recommends significant lifestyle changes.",
+        options: [
+          {
+            id: 1,
+            text: "Make major lifestyle changes",
+            impact: "Better health but requires discipline",
+            consequences: { career: -5, finances: -10, relationships: 10, happiness: 25 }
+          },
+          {
+            id: 2,
+            text: "Continue current lifestyle", 
+            impact: "Maintain status quo but health risks",
+            consequences: { career: 5, finances: 5, relationships: -5, happiness: -15 }
+          }
+        ]
+      },
+      45: {
+        year: 2047,
+        title: "Investment & Retirement Planning",
+        description: "You have an opportunity to make a significant investment in a startup founded by a former colleague. It's risky but could accelerate your retirement.",
+        options: [
+          {
+            id: 1,
+            text: "Make the investment",
+            impact: "High risk, high reward opportunity",
+            consequences: { career: 10, finances: 25, relationships: 0, happiness: 15 }
+          },
+          {
+            id: 2,
+            text: "Stick to conservative investments", 
+            impact: "Safe but slower wealth building",
+            consequences: { career: 0, finances: 10, relationships: 5, happiness: 5 }
           }
         ]
       }
