@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
@@ -21,6 +21,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Only check authentication if Supabase is configured
+    if (!isSupabaseConfigured()) {
+      // If Supabase is not configured, allow access (development mode)
+      setIsAuthenticated(true);
+      return;
+    }
+
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
@@ -55,7 +62,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
   
-  if (!isAuthenticated) {
+  if (!isAuthenticated && isSupabaseConfigured()) {
     return <Navigate to="/login" replace />;
   }
   

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
@@ -23,6 +23,15 @@ const Login = () => {
   });
 
   const handleGoogleLogin = async () => {
+    if (!isSupabaseConfigured()) {
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: "Supabase is not configured. Please set up your environment variables.",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithOAuth({
@@ -53,6 +62,18 @@ const Login = () => {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isSupabaseConfigured()) {
+      // Allow demo access when Supabase is not configured
+      toast({
+        title: "Demo Mode",
+        description: "Entering demo mode since Supabase is not configured.",
+      });
+      localStorage.setItem('userAuthenticated', 'true');
+      navigate('/onboarding');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -127,13 +148,18 @@ const Login = () => {
           <p className="text-blue-200 mt-2">
             {isLogin ? 'Welcome back!' : 'Start your journey'}
           </p>
+          {!isSupabaseConfigured() && (
+            <p className="text-yellow-300 text-sm mt-1">
+              Demo Mode - Supabase not configured
+            </p>
+          )}
         </CardHeader>
         
         <CardContent className="space-y-6">
           {/* Google Login Button */}
           <Button
             onClick={handleGoogleLogin}
-            disabled={loading}
+            disabled={loading || !isSupabaseConfigured()}
             className="w-full bg-white text-gray-900 hover:bg-gray-100 py-3 font-medium disabled:opacity-50"
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
