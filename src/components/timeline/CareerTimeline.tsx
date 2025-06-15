@@ -77,16 +77,52 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ scenario, onBack }) => 
         locations: ['San Francisco', 'Austin', 'Seattle', 'NYC'],
         careers: ['Junior Dev', 'Software Engineer', 'Senior Engineer', 'Tech Lead', 'Engineering Manager', 'VP Engineering'],
         decisions: [
-          { year: 2026, title: 'Startup Acquisition Offer', description: 'Your startup got acquired! Join the acquiring company or start fresh?' },
-          { year: 2028, title: 'Senior Role vs Startup CTO', description: 'Take a senior role at Google or become CTO of a new startup?' },
-          { year: 2031, title: 'Remote vs Office Leadership', description: 'Lead a distributed team or relocate for in-person leadership?' },
-          { year: 2034, title: 'IPO Opportunity', description: 'Your company is going public. Cash out or stay for the ride?' }
+          { 
+            year: 2026, 
+            title: 'Startup Acquisition Offer', 
+            description: 'Your startup got acquired! Join the acquiring company or start fresh?',
+            options: [
+              { id: 1, text: 'Join Google as Senior Engineer', impact: 'Stable income, big tech experience, less equity upside' },
+              { id: 2, text: 'Start a new startup with acquisition money', impact: 'High risk/reward, entrepreneurial freedom, uncertain income' },
+              { id: 3, text: 'Take a sabbatical and travel', impact: 'Life experience, reset, delayed career progression' }
+            ]
+          },
+          { 
+            year: 2028, 
+            title: 'Senior Role vs Startup CTO', 
+            description: 'Take a senior role at Google or become CTO of a new startup?',
+            options: [
+              { id: 1, text: 'Accept Google Senior Role', impact: 'High salary, job security, structured career path' },
+              { id: 2, text: 'Become Startup CTO', impact: 'Equity potential, leadership experience, high risk' },
+              { id: 3, text: 'Freelance consulting', impact: 'Flexibility, diverse projects, variable income' }
+            ]
+          },
+          { 
+            year: 2031, 
+            title: 'Remote vs Office Leadership', 
+            description: 'Lead a distributed team or relocate for in-person leadership?',
+            options: [
+              { id: 1, text: 'Remote leadership role', impact: 'Work-life balance, location flexibility, management challenges' },
+              { id: 2, text: 'Relocate for VP position', impact: 'Career advancement, higher salary, family disruption' },
+              { id: 3, text: 'Stay technical as principal engineer', impact: 'Technical expertise, less management stress, limited growth' }
+            ]
+          },
+          { 
+            year: 2034, 
+            title: 'IPO Opportunity', 
+            description: 'Your company is going public. Cash out or stay for the ride?',
+            options: [
+              { id: 1, text: 'Cash out 50% at IPO', impact: 'Financial security, reduced risk, some upside potential' },
+              { id: 2, text: 'Hold all shares for growth', impact: 'Maximum potential reward, high risk, delayed gratification' },
+              { id: 3, text: 'Cash out completely', impact: 'Immediate wealth, complete exit, no future upside' }
+            ]
+          }
         ],
         milestones: [
-          { year: 2025, title: 'First Major Launch', description: 'Your code powers a feature used by millions!' },
-          { year: 2027, title: 'Open Source Fame', description: 'Your project gets 10k GitHub stars!' },
-          { year: 2030, title: 'Industry Speaker', description: 'Keynote at major tech conference!' },
-          { year: 2033, title: 'Mentor Recognition', description: 'Featured as top engineering mentor!' }
+          { year: 2025, title: 'First Major Launch', description: 'Your code powers a feature used by millions!', impact: 'Career boost, industry recognition' },
+          { year: 2027, title: 'Open Source Fame', description: 'Your project gets 10k GitHub stars!', impact: 'Personal brand growth, job opportunities' },
+          { year: 2030, title: 'Industry Speaker', description: 'Keynote at major tech conference!', impact: 'Thought leadership, networking expansion' },
+          { year: 2033, title: 'Mentor Recognition', description: 'Featured as top engineering mentor!', impact: 'Legacy building, leadership opportunities' }
         ]
       },
       'creative-agency': {
@@ -95,19 +131,54 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ scenario, onBack }) => 
         locations: ['Austin', 'Portland', 'Nashville', 'Denver'],
         careers: ['Junior Designer', 'Creative Specialist', 'Art Director', 'Creative Director', 'Agency Partner', 'Studio Owner'],
         decisions: [
-          { year: 2026, title: 'Freelance vs Agency Growth', description: 'Go freelance with flexibility or climb the agency ladder?' },
-          { year: 2029, title: 'Brand Partnership', description: 'Exclusive partnership with major brand or maintain creative freedom?' },
-          { year: 2032, title: 'Studio Launch', description: 'Start your own creative studio or become agency partner?' },
-          { year: 2035, title: 'Teaching Opportunity', description: 'Professor position at art school or focus on commercial work?' }
+          { 
+            year: 2026, 
+            title: 'Freelance vs Agency Growth', 
+            description: 'Go freelance with flexibility or climb the agency ladder?',
+            options: [
+              { id: 1, text: 'Go freelance', impact: 'Creative freedom, variable income, self-management required' },
+              { id: 2, text: 'Stay at agency', impact: 'Stable income, team collaboration, less creative control' },
+              { id: 3, text: 'Join bigger agency', impact: 'Better clients, higher salary, more corporate environment' }
+            ]
+          },
+          { 
+            year: 2029, 
+            title: 'Brand Partnership', 
+            description: 'Exclusive partnership with major brand or maintain creative freedom?',
+            options: [
+              { id: 1, text: 'Accept exclusive partnership', impact: 'Guaranteed income, limited creative scope, brand alignment' },
+              { id: 2, text: 'Maintain independence', impact: 'Creative freedom, diverse projects, uncertain income' },
+              { id: 3, text: 'Part-time partnership', impact: 'Balanced approach, moderate stability, some constraints' }
+            ]
+          },
+          { 
+            year: 2032, 
+            title: 'Studio Launch', 
+            description: 'Start your own creative studio or become agency partner?',
+            options: [
+              { id: 1, text: 'Start own studio', impact: 'Full ownership, high risk, unlimited potential' },
+              { id: 2, text: 'Become agency partner', impact: 'Shared ownership, lower risk, collaborative leadership' },
+              { id: 3, text: 'Stay as creative director', impact: 'Focus on creativity, stable income, limited ownership' }
+            ]
+          },
+          { 
+            year: 2035, 
+            title: 'Teaching Opportunity', 
+            description: 'Professor position at art school or focus on commercial work?',
+            options: [
+              { id: 1, text: 'Accept professor position', impact: 'Academic prestige, teaching fulfillment, lower commercial income' },
+              { id: 2, text: 'Focus on commercial work', impact: 'Higher earnings, industry relevance, less academic impact' },
+              { id: 3, text: 'Part-time teaching', impact: 'Balanced approach, diverse income, time management challenges' }
+            ]
+          }
         ],
         milestones: [
-          { year: 2025, title: 'Award-Winning Campaign', description: 'Your campaign wins a prestigious advertising award!' },
-          { year: 2028, title: 'Gallery Exhibition', description: 'Your personal art featured in major gallery!' },
-          { year: 2031, title: 'Creative Leadership', description: 'Lead rebranding of Fortune 500 company!' },
-          { year: 2034, title: 'Industry Recognition', description: 'Named Creative Director of the Year!' }
+          { year: 2025, title: 'Award-Winning Campaign', description: 'Your campaign wins a prestigious advertising award!', impact: 'Industry recognition, career advancement' },
+          { year: 2028, title: 'Gallery Exhibition', description: 'Your personal art featured in major gallery!', impact: 'Artistic credibility, personal brand boost' },
+          { year: 2031, title: 'Creative Leadership', description: 'Lead rebranding of Fortune 500 company!', impact: 'High-profile success, industry influence' },
+          { year: 2034, title: 'Industry Recognition', description: 'Named Creative Director of the Year!', impact: 'Peak career achievement, speaking opportunities' }
         ]
-      },
-      // Add more career paths...
+      }
     };
 
     const careerData = careerPaths[scenario.id as keyof typeof careerPaths] || careerPaths['tech-startup'];
@@ -167,6 +238,14 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ scenario, onBack }) => 
             { year: 2030, title: 'Industry Speaker', description: 'Keynote at major tech conference!', impact: 'Thought leadership, networking expansion' },
             { year: 2033, title: 'Mentor Recognition', description: 'Featured as top engineering mentor!', impact: 'Legacy building, leadership opportunities' }
           ]
+        },
+        'creative-agency': {
+          milestones: [
+            { year: 2025, title: 'Award-Winning Campaign', description: 'Your campaign wins a prestigious advertising award!', impact: 'Industry recognition, career advancement' },
+            { year: 2028, title: 'Gallery Exhibition', description: 'Your personal art featured in major gallery!', impact: 'Artistic credibility, personal brand boost' },
+            { year: 2031, title: 'Creative Leadership', description: 'Lead rebranding of Fortune 500 company!', impact: 'High-profile success, industry influence' },
+            { year: 2034, title: 'Industry Recognition', description: 'Named Creative Director of the Year!', impact: 'Peak career achievement, speaking opportunities' }
+          ]
         }
       };
 
@@ -193,6 +272,80 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ scenario, onBack }) => 
                 { id: 1, text: 'Join Google as Senior Engineer', impact: 'Stable income, big tech experience, less equity upside' },
                 { id: 2, text: 'Start a new startup with acquisition money', impact: 'High risk/reward, entrepreneurial freedom, uncertain income' },
                 { id: 3, text: 'Take a sabbatical and travel', impact: 'Life experience, reset, delayed career progression' }
+              ]
+            },
+            { 
+              year: 2028, 
+              title: 'Senior Role vs Startup CTO', 
+              description: 'Take a senior role at Google or become CTO of a new startup?',
+              options: [
+                { id: 1, text: 'Accept Google Senior Role', impact: 'High salary, job security, structured career path' },
+                { id: 2, text: 'Become Startup CTO', impact: 'Equity potential, leadership experience, high risk' },
+                { id: 3, text: 'Freelance consulting', impact: 'Flexibility, diverse projects, variable income' }
+              ]
+            },
+            { 
+              year: 2031, 
+              title: 'Remote vs Office Leadership', 
+              description: 'Lead a distributed team or relocate for in-person leadership?',
+              options: [
+                { id: 1, text: 'Remote leadership role', impact: 'Work-life balance, location flexibility, management challenges' },
+                { id: 2, text: 'Relocate for VP position', impact: 'Career advancement, higher salary, family disruption' },
+                { id: 3, text: 'Stay technical as principal engineer', impact: 'Technical expertise, less management stress, limited growth' }
+              ]
+            },
+            { 
+              year: 2034, 
+              title: 'IPO Opportunity', 
+              description: 'Your company is going public. Cash out or stay for the ride?',
+              options: [
+                { id: 1, text: 'Cash out 50% at IPO', impact: 'Financial security, reduced risk, some upside potential' },
+                { id: 2, text: 'Hold all shares for growth', impact: 'Maximum potential reward, high risk, delayed gratification' },
+                { id: 3, text: 'Cash out completely', impact: 'Immediate wealth, complete exit, no future upside' }
+              ]
+            }
+          ]
+        },
+        'creative-agency': {
+          decisions: [
+            { 
+              year: 2026, 
+              title: 'Freelance vs Agency Growth', 
+              description: 'Go freelance with flexibility or climb the agency ladder?',
+              options: [
+                { id: 1, text: 'Go freelance', impact: 'Creative freedom, variable income, self-management required' },
+                { id: 2, text: 'Stay at agency', impact: 'Stable income, team collaboration, less creative control' },
+                { id: 3, text: 'Join bigger agency', impact: 'Better clients, higher salary, more corporate environment' }
+              ]
+            },
+            { 
+              year: 2029, 
+              title: 'Brand Partnership', 
+              description: 'Exclusive partnership with major brand or maintain creative freedom?',
+              options: [
+                { id: 1, text: 'Accept exclusive partnership', impact: 'Guaranteed income, limited creative scope, brand alignment' },
+                { id: 2, text: 'Maintain independence', impact: 'Creative freedom, diverse projects, uncertain income' },
+                { id: 3, text: 'Part-time partnership', impact: 'Balanced approach, moderate stability, some constraints' }
+              ]
+            },
+            { 
+              year: 2032, 
+              title: 'Studio Launch', 
+              description: 'Start your own creative studio or become agency partner?',
+              options: [
+                { id: 1, text: 'Start own studio', impact: 'Full ownership, high risk, unlimited potential' },
+                { id: 2, text: 'Become agency partner', impact: 'Shared ownership, lower risk, collaborative leadership' },
+                { id: 3, text: 'Stay as creative director', impact: 'Focus on creativity, stable income, limited ownership' }
+              ]
+            },
+            { 
+              year: 2035, 
+              title: 'Teaching Opportunity', 
+              description: 'Professor position at art school or focus on commercial work?',
+              options: [
+                { id: 1, text: 'Accept professor position', impact: 'Academic prestige, teaching fulfillment, lower commercial income' },
+                { id: 2, text: 'Focus on commercial work', impact: 'Higher earnings, industry relevance, less academic impact' },
+                { id: 3, text: 'Part-time teaching', impact: 'Balanced approach, diverse income, time management challenges' }
               ]
             }
           ]
