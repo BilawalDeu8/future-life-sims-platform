@@ -3,9 +3,9 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import { OnboardingData } from "@/pages/Onboarding";
-import { MapPin, GraduationCap, DollarSign, Home } from "lucide-react";
+import { MapPin, GraduationCap, DollarSign, Home, Calendar } from "lucide-react";
 
 interface PersonalFoundationProps {
   data: OnboardingData;
@@ -37,6 +37,16 @@ const PersonalFoundation: React.FC<PersonalFoundationProps> = ({ data, updateDat
     "Own place (house/condo)"
   ];
 
+  const ageRanges = [
+    { label: "16-20", value: 18 },
+    { label: "21-25", value: 23 },
+    { label: "26-30", value: 28 },
+    { label: "31-35", value: 33 },
+    { label: "36-40", value: 38 },
+    { label: "41-45", value: 43 },
+    { label: "46-50", value: 48 },
+  ];
+
   return (
     <div className="space-y-8">
       <div className="text-center mb-8">
@@ -48,35 +58,46 @@ const PersonalFoundation: React.FC<PersonalFoundationProps> = ({ data, updateDat
         </p>
       </div>
 
-      {/* Age Slider */}
+      {/* Age Selection */}
       <Card className="bg-white/5 border-white/20">
         <CardContent className="p-6">
           <div className="flex items-center mb-4">
             <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
-              <span className="text-blue-400 font-bold">🎂</span>
+              <Calendar className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <Label className="text-white text-lg font-semibold">Current Age</Label>
-              <p className="text-blue-200 text-sm">Help us understand your life stage</p>
+              <Label className="text-white text-lg font-semibold">Age Range</Label>
+              <p className="text-blue-200 text-sm">Select your current age range</p>
             </div>
           </div>
-          <div className="space-y-4">
-            <div className="text-center">
-              <span className="text-3xl font-bold text-white">{data.personalFoundation.age}</span>
-              <span className="text-blue-200 ml-2">years old</span>
-            </div>
-            <Slider
-              value={[data.personalFoundation.age]}
-              onValueChange={(value) => updateData('personalFoundation', { age: value[0] })}
-              max={30}
-              min={16}
-              step={1}
-              className="w-full"
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {ageRanges.map((range) => (
+              <Button
+                key={range.label}
+                variant={data.personalFoundation.age === range.value ? "default" : "outline"}
+                onClick={() => updateData('personalFoundation', { age: range.value })}
+                className={`p-4 h-auto flex flex-col ${
+                  data.personalFoundation.age === range.value
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 border-blue-500'
+                    : 'border-white/20 bg-white/5 text-blue-100 hover:border-blue-400/50 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <span className="text-lg font-semibold">{range.label}</span>
+                <span className="text-xs opacity-80">years</span>
+              </Button>
+            ))}
+          </div>
+          <div className="mt-4">
+            <Label className="text-white text-sm">Or enter exact age:</Label>
+            <Input
+              type="number"
+              min="16"
+              max="60"
+              value={data.personalFoundation.age}
+              onChange={(e) => updateData('personalFoundation', { age: parseInt(e.target.value) || 22 })}
+              className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-blue-300 max-w-32"
+              placeholder="Age"
             />
-            <div className="flex justify-between text-sm text-blue-300">
-              <span>16</span>
-              <span>30</span>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -126,7 +147,7 @@ const PersonalFoundation: React.FC<PersonalFoundationProps> = ({ data, updateDat
           <Input
             value={data.personalFoundation.location}
             onChange={(e) => updateData('personalFoundation', { location: e.target.value })}
-            placeholder="e.g., Austin, TX or London, UK"
+            placeholder="e.g., Bangalore, India or Mumbai, India"
             className="bg-white/10 border-white/20 text-white placeholder:text-blue-300"
           />
         </CardContent>

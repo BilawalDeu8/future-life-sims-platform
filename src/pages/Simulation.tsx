@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, DollarSign, Clock, Zap, Users, GitCompare } from "lucide-react";
+import { ArrowRight, MapPin, DollarSign, Clock, Zap, Users, GitCompare, Settings, Plus } from "lucide-react";
 import ScenarioDetail from "@/components/simulation/ScenarioDetail";
 import ScenarioComparison from "@/components/simulation/ScenarioComparison";
+import PersonalizationWidget from "@/components/personalization/PersonalizationWidget";
 import { useNavigate } from 'react-router-dom';
+import { usePersonalization } from '@/hooks/usePersonalization';
 
 interface LifeScenario {
   id: string;
@@ -110,8 +112,132 @@ const scenarios: LifeScenario[] = [
 
 const Simulation = () => {
   const navigate = useNavigate();
+  const { profile, updateProfile } = usePersonalization();
   const [selectedScenario, setSelectedScenario] = useState<LifeScenario | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+  const [showPersonalization, setShowPersonalization] = useState(false);
+  const [scenarios, setScenarios] = useState<LifeScenario[]>([]);
+
+  // Get user's location from localStorage (set during onboarding)
+  const getUserLocation = () => {
+    const onboardingData = localStorage.getItem('onboardingData');
+    if (onboardingData) {
+      const data = JSON.parse(onboardingData);
+      return data.personalFoundation?.location || 'Bangalore, India';
+    }
+    return 'Bangalore, India';
+  };
+
+  const userLocation = getUserLocation();
+  const isIndianLocation = userLocation.toLowerCase().includes('india');
+
+  useEffect(() => {
+    // Create personalized scenarios based on user's location and preferences
+    const baseScenarios = isIndianLocation ? [
+      {
+        id: "tech-bangalore",
+        title: "Tech Innovator",
+        career: "Software Developer at Startup",
+        location: "Bangalore, India",
+        salaryRange: "₹12L - ₹25L",
+        workLifeBalance: 65,
+        stressLevel: 75,
+        lifestyle: "Fast-paced tech hub professional",
+        image: "photo-1581091226825-a6a2a5aee158",
+        description: "Living the Silicon Valley of India dream with cutting-edge technology and high growth potential",
+        livingSpace: "Modern 2BHK apartment in Koramangala",
+        socialLife: "Tech meetups, craft breweries, weekend hackathons"
+      },
+      {
+        id: "finance-mumbai",
+        title: "Financial Analyst",
+        career: "Investment Banking Analyst",
+        location: "Mumbai, India",
+        salaryRange: "₹15L - ₹35L",
+        workLifeBalance: 45,
+        stressLevel: 85,
+        lifestyle: "High-powered financial district professional",
+        image: "photo-1470071459604-3b5ec3a7fe05",
+        description: "Fast track to financial success in India's financial capital",
+        livingSpace: "Luxury high-rise apartment in Bandra",
+        socialLife: "Corporate events, fine dining, exclusive networking"
+      },
+      {
+        id: "startup-delhi",
+        title: "Entrepreneur",
+        career: "Startup Founder",
+        location: "Delhi NCR, India",
+        salaryRange: "₹8L - ₹50L+",
+        workLifeBalance: 30,
+        stressLevel: 90,
+        lifestyle: "High-risk, high-reward innovator",
+        image: "photo-1522202176988-66273c2fd55f",
+        description: "Build the next unicorn in India's startup ecosystem",
+        livingSpace: "Co-working space with attached living quarters",
+        socialLife: "Investor meetups, startup events, networking dinners"
+      },
+      {
+        id: "consulting-pune",
+        title: "Strategy Consultant",
+        career: "Management Consultant",
+        location: "Pune, India",
+        salaryRange: "₹18L - ₹40L",
+        workLifeBalance: 55,
+        stressLevel: 70,
+        lifestyle: "Strategic problem-solver and advisor",
+        image: "photo-1507003211169-0a1dd7228f2d",
+        description: "Help transform businesses across industries in India's consulting hub",
+        livingSpace: "Upscale apartment in Koregaon Park",
+        socialLife: "Business networking, cultural events, weekend getaways"
+      },
+      {
+        id: "remote-anywhere",
+        title: "Digital Nomad",
+        career: "Remote Product Manager",
+        location: "Location Independent (India)",
+        salaryRange: "₹20L - ₹45L",
+        workLifeBalance: 85,
+        stressLevel: 45,
+        lifestyle: "Freedom-focused remote worker",
+        image: "photo-1500673922987-e212871fec22",
+        description: "Work from anywhere while managing global products for international companies",
+        livingSpace: "Co-living spaces from Goa to Himachal",
+        socialLife: "Digital nomad communities, local cultural experiences"
+      },
+      {
+        id: "pharma-hyderabad",
+        title: "Biotech Researcher",
+        career: "Pharmaceutical Researcher",
+        location: "Hyderabad, India",
+        salaryRange: "₹10L - ₹28L",
+        workLifeBalance: 75,
+        stressLevel: 60,
+        lifestyle: "Science-driven innovator",
+        image: "photo-1523712999610-f77fbcfc3843",
+        description: "Contribute to breakthrough medical research in India's pharma capital",
+        livingSpace: "Modern apartment near HITEC City",
+        socialLife: "Research conferences, science clubs, outdoor activities"
+      }
+    ] : [
+      {
+        id: "tech-startup",
+        title: "Tech Innovator",
+        career: "Software Developer at Startup",
+        location: "San Francisco, CA",
+        salaryRange: "$95k - $140k",
+        workLifeBalance: 65,
+        stressLevel: 75,
+        lifestyle: "Fast-paced urban professional",
+        image: "photo-1581091226825-a6a2a5aee158",
+        description: "Living the Silicon Valley dream with cutting-edge technology and high growth potential",
+        livingSpace: "Modern studio apartment in SOMA",
+        socialLife: "Tech meetups, rooftop bars, weekend hackathons"
+      },
+      // ... keep existing code (other US scenarios)
+    ];
+
+    setScenarios(baseScenarios);
+  }, [isIndianLocation]);
 
   if (showComparison) {
     return (
@@ -133,34 +259,65 @@ const Simulation = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+      {/* Personalization Widget */}
+      {showPersonalization && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <PersonalizationWidget
+            profile={profile}
+            onUpdateProfile={updateProfile}
+            onClose={() => setShowPersonalization(false)}
+          />
+        </div>
+      )}
+
       {/* Header */}
       <div className="text-center py-12">
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-          Life Path Simulator
-        </h1>
-        <p className="text-xl text-gray-300 mb-8">
-          Explore different career paths and see where they lead
+        <div className="flex justify-center items-center mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Life Path Simulator
+          </h1>
+          <Button
+            onClick={() => setShowPersonalization(true)}
+            className="ml-4 bg-purple-600/20 border border-purple-400 text-purple-300 hover:bg-purple-600/30 hover:text-white"
+            size="sm"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Personalize
+          </Button>
+        </div>
+        <p className="text-xl text-gray-300 mb-4">
+          Explore different career paths and see where they lead in {userLocation}
+        </p>
+        <p className="text-sm text-blue-200 mb-8">
+          Scenarios personalized based on your location and preferences
         </p>
         <div className="flex justify-center space-x-4">
           <Button
             onClick={() => navigate('/timeline')}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-8 py-3"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 px-8 py-3 text-white"
           >
             Experience Your Life Timeline
           </Button>
           <Button
             onClick={() => setShowComparison(true)}
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3"
+            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-8 py-3 text-white"
           >
             <GitCompare className="h-5 w-5 mr-2" />
             Compare Life Paths
           </Button>
           <Button
             onClick={() => navigate('/community')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 text-white"
           >
             <Users className="h-5 w-5 mr-2" />
             Connect with Community
+          </Button>
+          <Button
+            onClick={() => navigate('/timeline')}
+            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 px-8 py-3 text-white"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Create Custom Path
           </Button>
         </div>
       </div>
@@ -192,11 +349,11 @@ const Simulation = () => {
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 mr-2 text-purple-400" />
-                      <span>{scenario.location}</span>
+                      <span className="text-gray-300">{scenario.location}</span>
                     </div>
                     <div className="flex items-center">
                       <DollarSign className="h-4 w-4 mr-1 text-green-400" />
-                      <span>{scenario.salaryRange}</span>
+                      <span className="text-gray-300">{scenario.salaryRange}</span>
                     </div>
                   </div>
                   
@@ -204,7 +361,7 @@ const Simulation = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-2 text-blue-400" />
-                        <span className="text-sm">Work-Life Balance</span>
+                        <span className="text-sm text-gray-300">Work-Life Balance</span>
                       </div>
                       <div className="w-24 bg-white/20 rounded-full h-2">
                         <div 
@@ -217,7 +374,7 @@ const Simulation = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Zap className="h-4 w-4 mr-2 text-yellow-400" />
-                        <span className="text-sm">Stress Level</span>
+                        <span className="text-sm text-gray-300">Stress Level</span>
                       </div>
                       <div className="w-24 bg-white/20 rounded-full h-2">
                         <div 
@@ -233,7 +390,7 @@ const Simulation = () => {
                   </p>
                   
                   <Button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 group-hover:shadow-lg transition-all duration-300 text-white"
                   >
                     Live This Future
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
