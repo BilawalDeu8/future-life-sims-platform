@@ -13,9 +13,9 @@ interface LifestylePreferencesProps {
 
 const LifestylePreferences: React.FC<LifestylePreferencesProps> = ({ data, updateData }) => {
   const scheduleOptions = [
-    { id: "early_bird", label: "Early Bird", desc: "Up at sunrise, peak energy in morning", emoji: "🌅" },
-    { id: "standard", label: "Standard Schedule", desc: "9-5 rhythm, consistent routine", emoji: "⏰" },
-    { id: "night_owl", label: "Night Owl", desc: "Late riser, energized in evening", emoji: "🌙" }
+    { id: "early riser", label: "Early Bird", desc: "Up at sunrise, peak energy in morning", emoji: "🌅" },
+    { id: "the usual", label: "Standard Schedule", desc: "9-5 rhythm, consistent routine", emoji: "⏰" },
+    { id: "Midnight hustler", label: "Night Owl", desc: "Late riser, energized in evening", emoji: "🌙" }
   ];
 
   const socialOptions = [
