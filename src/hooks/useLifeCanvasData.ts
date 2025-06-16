@@ -37,12 +37,14 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
       const savedEvents = localStorage.getItem(`life-events-${userId}`);
       if (savedEvents) {
         const parsed = JSON.parse(savedEvents);
-        setEvents(parsed.map((event: any) => ({
+        const eventsWithDates = parsed.map((event: any) => ({
           ...event,
           date: new Date(event.date),
           createdAt: new Date(event.createdAt),
           updatedAt: new Date(event.updatedAt)
-        })));
+        }));
+        console.log('Loaded events from storage:', eventsWithDates);
+        setEvents(eventsWithDates);
       } else {
         // Create some sample events for demo
         const sampleEvents: LifeEvent[] = [
@@ -52,7 +54,7 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
             description: 'Began studying Computer Science at State University',
             date: new Date(birthYear + 18, 8, 1),
             category: { id: 'career', name: 'Career', icon: '🎓', color: 'career', description: 'Education milestone' },
-            position: { x: 0, y: 200 },
+            position: { x: 0, y: -50 },
             satisfactionRating: 4,
             financialImpact: -50000,
             photos: [],
@@ -63,9 +65,29 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
             isPrivate: false,
             createdAt: new Date(),
             updatedAt: new Date()
+          },
+          {
+            id: '2',
+            title: 'First Job',
+            description: 'Got my first internship at a tech company',
+            date: new Date(birthYear + 20, 5, 15),
+            category: { id: 'career', name: 'Career', icon: '💼', color: 'career', description: 'Job milestone' },
+            position: { x: 0, y: 50 },
+            satisfactionRating: 5,
+            financialImpact: 25000,
+            photos: [],
+            mood: 'excited',
+            isConnectedToPrediction: false,
+            connections: ['1'],
+            tags: ['work', 'achievement'],
+            isPrivate: false,
+            createdAt: new Date(),
+            updatedAt: new Date()
           }
         ];
+        console.log('Setting sample events:', sampleEvents);
         setEvents(sampleEvents);
+        localStorage.setItem(`life-events-${userId}`, JSON.stringify(sampleEvents));
       }
     } catch (error) {
       console.error('Failed to load events:', error);
@@ -78,6 +100,7 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
   // Save events to storage
   const saveEvents = useCallback((newEvents: LifeEvent[]) => {
     try {
+      console.log('Saving events:', newEvents);
       localStorage.setItem(`life-events-${userId}`, JSON.stringify(newEvents));
     } catch (error) {
       console.error('Failed to save events:', error);
@@ -87,13 +110,15 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
 
   // Add new event
   const addEvent = useCallback(async (eventData: Partial<LifeEvent>) => {
+    console.log('Adding new event:', eventData);
+    
     const newEvent: LifeEvent = {
       id: Date.now().toString(),
       title: eventData.title || 'New Event',
       description: eventData.description || '',
       date: eventData.date || new Date(),
       category: eventData.category!,
-      position: eventData.position || { x: 0, y: 300 },
+      position: eventData.position || { x: 0, y: Math.random() * 200 - 100 }, // Random Y position
       satisfactionRating: eventData.satisfactionRating || 3,
       financialImpact: eventData.financialImpact,
       photos: eventData.photos || [],
@@ -109,11 +134,14 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
     };
 
     const updatedEvents = [...events, newEvent];
+    console.log('Updated events array:', updatedEvents);
     setEvents(updatedEvents);
     saveEvents(updatedEvents);
     
     // Generate new insights after adding event
     generateInsights(updatedEvents);
+    
+    return newEvent;
   }, [events, saveEvents]);
 
   // Update existing event
@@ -167,7 +195,7 @@ export const useLifeCanvasData = (userId: string, currentAge: number, birthYear:
 
     // Pattern: High satisfaction events
     const highSatisfactionEvents = eventData.filter(e => e.satisfactionRating >= 4);
-    if (highSatisfactionEvents.length >= 3) {
+    if (highSatisfactionEvents.length >= 2) {
       newInsights.push({
         id: 'high-satisfaction-pattern',
         type: 'pattern',

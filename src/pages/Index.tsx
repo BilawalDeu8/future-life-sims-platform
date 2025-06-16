@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -16,8 +17,8 @@ const Index = () => {
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
-    // Show welcome message for new users
-    if (!isLoading && profile && !profile.preferences?.onboardingCompleted) {
+    // Show welcome message for new users only if they haven't completed onboarding
+    if (!isLoading && profile && !profile.onboardingCompleted) {
       setTimeout(() => {
         navigate('/onboarding');
       }, 2000);
@@ -169,8 +170,6 @@ const Index = () => {
           <div className="mb-16">
             <UserStatsOverview 
               stats={userStats}
-              onToggle={() => setShowStats(!showStats)}
-              isExpanded={showStats}
             />
           </div>
         )}
