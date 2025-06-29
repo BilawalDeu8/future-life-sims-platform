@@ -131,7 +131,7 @@ const FinancialDashboard: React.FC<FinancialDashboardProps> = ({ scenario, onBac
             <TabsTrigger value="debt-payoff" className="text-white data-[state=active]:bg-purple-600">
               Debt Strategy
             </TabsTrigger>
-            <TabsTrigger value="investments" className="text-white data-[state=active]:bg-purple-600">
+            <TabsTrigger value="future-investments" className="text-white data-[state=active]:bg-purple-600">
               Investments
             </TabsTrigger>
           </TabsList>
