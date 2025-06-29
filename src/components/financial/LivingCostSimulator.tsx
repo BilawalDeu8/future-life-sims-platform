@@ -31,7 +31,7 @@ const LivingCostSimulator: React.FC<LivingCostSimulatorProps> = ({ salary, locat
       percentage: 30,
       color: 'bg-blue-500',
       description: 'Rent/mortgage, utilities, insurance',
-      examples: ['Studio apartment', '1BR apartment', '2BR apartment', 'House rental']
+      examples: ['Studio apartment', '1BHK apartment', '2BHK apartment', 'House rental']
     },
     {
       id: 'transportation',
@@ -44,7 +44,7 @@ const LivingCostSimulator: React.FC<LivingCostSimulatorProps> = ({ salary, locat
     },
     {
       id: 'food',
-      name: 'Food & Dining',
+      name: 'Food and Dining',
       icon: <Coffee className="h-5 w-5" />,
       percentage: 12,
       color: 'bg-orange-500',
